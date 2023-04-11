@@ -16,8 +16,8 @@ When you run, theres a login page with either login or create account
             Buy Sell Stocks:
         Comptroller:
             Add/Remove Stocks
-            Change Prices
-                Update button?
+            Change Prices (select a stock, add new price)
+                Update button? for all?
 
     Tradeables (buy and sell)
 
@@ -25,3 +25,5 @@ When you run, theres a login page with either login or create account
             Use composite interface because a user can have multiple of 1 stock, bought at different values
         Option- same as above. Maybe an interface? Or just implements interface
         Future - ""
+
+        Stocks should track all past values and purchase value. Maybe can make this into a pretty graph
