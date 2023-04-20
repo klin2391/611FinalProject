@@ -27,7 +27,7 @@ public class Window_Stock implements ActionListener{
     private JPanel p_info;
     
     // Default Constructor
-    public Window_Stock(ArrayList <Stock> s){
+    public Window_Stock(ArrayList <Stock> s, boolean isOwned){
         this.stocks = s;
         f = new JFrame(stocks.get(0).getSymbol());
         l_name = new JLabel("Name: " + stocks.get(0).getName());
@@ -63,10 +63,11 @@ public class Window_Stock implements ActionListener{
         // p_info.setLayout(null);
         p_info.add(l_name);
         p_info.add(l_currentPrice);
-        p_info.add(l_profit);
-        p_info.add(l_numberOfShares);
-        p_info.add(l_totalCost);
-
+        if (isOwned){
+            p_info.add(l_profit);
+            p_info.add(l_numberOfShares);
+            p_info.add(l_totalCost);
+        }
         f.add(p_info, BorderLayout.NORTH);
         f.add(p_graph, BorderLayout.SOUTH);
         

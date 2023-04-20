@@ -6,6 +6,8 @@
  * This class is a tentative draft at the user page.
  * Has functionality of depositing/withdrawing funds,
  * as well as buy/sell stocks (not implemented yet)
+ * 
+ * TODO Remove window from user when closed
  */
 
 import javax.swing.*;  
@@ -14,7 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 
-public class Window_User implements ActionListener{
+public class Window_User implements ActionListener, Observer_User{
     private JFrame f;                           // Frame
     private User user;                          // User profile
     JLabel l_nameFirst;
@@ -22,58 +24,60 @@ public class Window_User implements ActionListener{
     JLabel l_cashBuyPower;
     JLabel l_accountValue;
     JComboBox <String> cb_stocksOwned;          //Combo box allows drop down
-    JButton b_DepositWithdraw;
-    JButton b_BuySell;
-    JButton b_Logout;
-    JPanel p_North;
-    JPanel p_Center;
-    JPanel p_South;
+    JButton b_depositWithdraw;
+    JButton b_buySell;
+    JButton b_logout;
+    JPanel p_north;
+    JPanel p_center;
+    JPanel p_south;
 
 
     // Constructor that takes a user
     public Window_User(User u){
         this.user = u;                                      // Sets user
+        register(user);
         f = new JFrame(u.getUsername());
         l_nameFirst = new JLabel("First Name: " + u.getFirstName());
         l_nameLast = new JLabel("Last Name: " + u.getLastName());
         l_cashBuyPower = new JLabel("Cash Buying Power: " + u.getBalance());
         l_accountValue = new JLabel("Account Value: " + u.getTotalValue());
-        b_DepositWithdraw= new JButton("Deposit/Withdraw Funds");
-        b_BuySell = new JButton("Buy/Sell Stocks");
-        b_Logout = new JButton("Logout");
+        b_depositWithdraw= new JButton("Deposit/Withdraw Funds");
+        b_buySell = new JButton("Buy/Sell Stocks");
+        b_logout = new JButton("Logout");
         cb_stocksOwned = new JComboBox <String>();
         cb_stocksOwned.addItem("Select a Stock to View");
         for (String s : u.getPortfolio().keySet()){         //Adds owned stocks to list
             cb_stocksOwned.addItem(s);
         }
         cb_stocksOwned.addActionListener(this);
-        b_DepositWithdraw.addActionListener(this);
+        b_depositWithdraw.addActionListener(this);
+        b_buySell.addActionListener(this);
         l_nameFirst.setBounds(50, 50, 200, 30);
         l_nameLast.setBounds(50, 100, 200, 30);
         l_cashBuyPower.setBounds(50, 150, 200, 30);
         l_accountValue.setBounds(50, 250, 200, 30);
         cb_stocksOwned.setBounds(50, 200, 200, 30);
-        b_DepositWithdraw.setBounds(50, 300, 200, 30);
-        b_BuySell.setBounds(50, 350, 200, 30);
-        b_Logout.setBounds(50, 400, 200, 30);
+        b_depositWithdraw.setBounds(50, 300, 200, 30);
+        b_buySell.setBounds(50, 350, 200, 30);
+        b_logout.setBounds(50, 400, 200, 30);
         f.setLayout(new BorderLayout());
-        p_North = new JPanel();
-        p_North.add(l_nameFirst);
-        p_North.add(l_nameLast);
-        p_Center = new JPanel();
-        p_Center.add(l_cashBuyPower);
-        p_Center.add(l_accountValue);
-        p_Center.add(cb_stocksOwned);
-        p_South = new JPanel(new FlowLayout());
-        p_South.add(b_DepositWithdraw);
-        p_South.add(b_BuySell);
-        p_South.add(b_Logout);
+        p_north = new JPanel();
+        p_north.add(l_nameFirst);
+        p_north.add(l_nameLast);
+        p_center = new JPanel();
+        p_center.add(l_cashBuyPower);
+        p_center.add(l_accountValue);
+        p_center.add(cb_stocksOwned);
+        p_south = new JPanel(new FlowLayout());
+        p_south.add(b_depositWithdraw);
+        p_south.add(b_buySell);
+        p_south.add(b_logout);
 
         // f.add(l_nameFirst);
         // f.add(l_nameLast);
-        f.add(p_North, BorderLayout.NORTH);
-        f.add(p_Center, BorderLayout.CENTER);
-        f.add(p_South, BorderLayout.SOUTH);
+        f.add(p_north, BorderLayout.NORTH);
+        f.add(p_center, BorderLayout.CENTER);
+        f.add(p_south, BorderLayout.SOUTH);
         f.setSize(800, 800);
         
         f.setVisible(true);
@@ -86,12 +90,17 @@ public class Window_User implements ActionListener{
             Window_Funds wf = new Window_Funds(user, this);
             return;
         }
+        else if (e.getActionCommand().equals("Buy/Sell Stocks")){            // If button to buy is clicked
+            System.out.println("Buy/Sell Stocks");
+            Window_Trade wbs = new Window_Trade(user.getPortfolio(), user.getStockMarket(), user);
+            return;
+        }
 
         JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed
         String symbol = (String)cb.getSelectedItem();
         if (symbol.equals("Select a Stock to View"))                            // Do nothing
             return;
-        Window_Stock ws = new Window_Stock(user.getStock(symbol));
+        Window_Stock ws = new Window_Stock(user.getStock(symbol),true);
     }
 
     // Update values on frame based on new user
@@ -100,6 +109,33 @@ public class Window_User implements ActionListener{
         l_nameLast.setText("Last Name: " + u.getLastName());
         l_cashBuyPower.setText("Cash Buying Power: " + u.getBalance());
         l_accountValue.setText("Account Value: " + u.getTotalValue());
+        
+        // Only add to combo box if new stock is added
+        if (u.getPortfolio().size() > cb_stocksOwned.getItemCount() - 1){
+            cb_stocksOwned.addItem((String) u.getPortfolio().keySet().toArray()[u.getPortfolio().size() - 1]);
+        }
+        if (u.getPortfolio().size() < cb_stocksOwned.getItemCount() - 1){
+            if (u.getPortfolio().size() == 0) {
+                for (int i = 0; i < cb_stocksOwned.getItemCount() ; i++){
+                    if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
+                        cb_stocksOwned.removeItemAt(i);
+                    }
+                        
+                }
+            }
+            else {
+                for (int i = 0; i < cb_stocksOwned.getItemCount(); i++){
+                    if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
+                        if (!u.getPortfolio().containsKey(cb_stocksOwned.getItemAt(i))){
+                            cb_stocksOwned.removeItemAt(i);
+                        }
+                    }
+                }
+            }
+        }
+
     }
-    
+    public void register(User u){
+        u.addWindow(this);
+    }
 }

@@ -4,6 +4,7 @@
  * 215APR2023
  * 
  * This class is a tentative draft at creating a stock object
+ * TODO: implement listener for root stocks
  */
 
 import java.util.ArrayList;
@@ -25,11 +26,10 @@ import java.util.ArrayList;
     }
 
     // Constructor with values
-    public Stock(String name, String symbol, Value price, double purchasePrice){
+    public Stock(String name, String symbol, Value price){
         this.name = name;
         this.symbol = symbol;
         this.price = price;
-        this.purchasePrice = purchasePrice;
         this.owned = false;
     }
 
@@ -63,5 +63,37 @@ import java.util.ArrayList;
     }
 
     // Mutator methods
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setSymbol(String symbol){
+        this.symbol = symbol;
+    }
+
+    public void setPrice(Value price){
+        this.price = price;
+    }
+
+    public void setPurchasePrice(double purchasePrice){
+        this.purchasePrice = purchasePrice;
+    }
+
+    public void setOwned(boolean owned){
+        this.owned = owned;
+    }
+
+    // I want to change this to implement a listener
+    public void updatePrice(ArrayList<Stock> stocks){
+        for (int i = 0; i < stocks.size(); i++){
+            if (stocks.get(i).getSymbol().equals(this.symbol)){
+                this.price.setCurrent(stocks.get(i).getCurrentPrice());
+            }
+        }
+    }
+
+    public void setPrice(double newPrice){
+        price.setCurrent(newPrice);
+    }
 
  }
