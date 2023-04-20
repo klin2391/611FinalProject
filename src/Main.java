@@ -6,6 +6,7 @@ public class Main {
         history.add(5.0);
         history.add(2.0);
         history.add(11.0);
+        System.out.println ("TEST");
         Value v = new Value(9, history);
         // System.out.println(v.getCurrent());
         Stock s = new Stock("Kevin", "KVN", v);
