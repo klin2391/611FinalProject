@@ -10,8 +10,7 @@
  * TODO Remove window from user when closed
  */
 
-import javax.swing.*;  
-import java.util.*;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;

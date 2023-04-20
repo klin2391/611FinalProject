@@ -4,11 +4,11 @@ When you run, theres a login page with either login or create account
 
     Login:
         Login as user
-            User needs state. Has name, password, actual balance, and projected balance. Maybe txt like in MH
+            User needs state. Has name, password, actual balance, and projected balance. Maybe txt like in MH or SQL db
         Login as Comptroller
-            Only 1 conmproller (Singleton at init)
+            Only 1 comptroller (Singleton at init)
     Create user:
-        Creates account. Manually enter info. Makes sure no repeat. (Factory Pattern)
+        Creates account. Manually enter info. Makes sure no repeat. (Factory Pattern) Must be approved by comptroller
     
     Once Logged in:
         User:
@@ -16,6 +16,9 @@ When you run, theres a login page with either login or create account
             Buy Sell Stocks:
         Comptroller:
             Add/Remove Stocks
+            Approve/reject users
+            See all users
+            Notify special users (observer)
             Change Prices (select a stock, add new price)
                 Update button? for all?
 
