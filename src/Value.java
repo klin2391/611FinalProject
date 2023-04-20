@@ -6,6 +6,7 @@
  * This class is a tentative draft at creating a value for stocks
  * Required work invovles reading from a database
  */
+
 import java.util.ArrayList;
 
 public class Value {
@@ -22,6 +23,7 @@ public class Value {
     public Value(double current, ArrayList <Double> history){
         this.current = current;
         this.history = history;
+        this.history.add(this.current);
     }
 
     // Accessor methods
@@ -31,5 +33,15 @@ public class Value {
 
     public ArrayList <Double> getHistory(){
         return history;
+    }
+
+    // Mutator methods
+    public void setCurrent(double current){
+        this.history.add(this.current);
+        this.current = current;
+    }
+
+    public void setHistory(ArrayList <Double> history){
+        this.history = history;
     }
 }
