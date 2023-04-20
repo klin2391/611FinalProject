@@ -5,19 +5,23 @@
  * 
  * This class is a tentative draft at creating a user.
  * Has name, password, username, balance and owned stonks
+ * 
+ * TODO: Listener for stocks when updated
  */
 
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.sql.*;
 
-public class User {
+public class User implements User_Account{
     private String firstName;
     private String lastName;
     private String username;
     private String password;
-    private double balance;             // Cash Buying Power (realized account value) in dollars
-    private HashMap <String, ArrayList<Stock>> portfolio;
+    private double balance;                                 // Cash Buying Power (realzed account value) in dollars
+    private HashMap <String, ArrayList<Stock>> portfolio;   // Stocks owned by user
+    private String messageToUser;
+    private ArrayList<Observer_User> windows;
+    private ArrayList<Stock> stockMarket;
 
     // Default Constructor
     public User() {
@@ -27,16 +31,21 @@ public class User {
         password = "password";
         balance = 10000;
         portfolio = new HashMap <String, ArrayList<Stock>>();
+        messageToUser = "";
+        windows = new ArrayList<Observer_User>();
     }
 
     // Constructor with values
-    public User(String firstName, String lastName, String username, String password, double balance) {
+    public User(String firstName, String lastName, String username, String password, double balance, ArrayList<Stock> stockMarket) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
         this.balance = balance;
         portfolio = new HashMap <String, ArrayList<Stock>>();
+        messageToUser = "";
+        windows = new ArrayList<Observer_User>();
+        this.stockMarket = stockMarket;
     }
 
     // Accessor methods
@@ -60,6 +69,7 @@ public class User {
         return balance;
     }
 
+    // Returns the value of all stocks owned
     public double getStockValue() {
         double value = 0;
         for (String symbol : portfolio.keySet()) {
@@ -80,6 +90,14 @@ public class User {
 
     public ArrayList<Stock> getStock(String symbol) {
         return portfolio.get(symbol);
+    }
+
+    public ArrayList<Stock> getStockMarket() {
+        return stockMarket;
+    }
+
+    public String getMessageToUser() {
+        return messageToUser;
     }
 
     // Mutator methods
@@ -118,8 +136,86 @@ public class User {
         }   
     }
 
-    public static void main(String[] args) {
-        SQL sql = new SQL();
-        sql.insertCustomer("Spongebob", "Squarepants", "SBOB", "SQUARE", 10000);
+    public void removeStock(Stock stock) {
+        if (portfolio.containsKey(stock.getSymbol())) {
+            portfolio.get(stock.getSymbol()).remove(stock);
+        }
     }
+
+    public void setMessageToUser(String message) {
+        messageToUser = message;
+    }
+
+    
+    // Observer methods
+    public void addWindow(Observer_User window) {
+        windows.add(window);
+    }
+
+    public void removeWindow(Window_User window) {
+        windows.remove(window);
+    }
+
+    public void updateStocks(ArrayList<Stock> stocks) {
+        stockMarket = stocks;
+        for (Stock stock : stocks) {
+            if (portfolio.containsKey(stock.getSymbol())) {
+                for (Stock ownedStock : portfolio.get(stock.getSymbol())) {
+                    ownedStock.updatePrice(stocks);
+                }
+            }
+        }
+        updateWindows();
+    }
+
+    public void updateWindows() {
+        for (Observer_User window : windows) {
+            if (window != null)
+                window.update(this);
+        }
+    }
+
+    // Buy a stock.  Returns 1 if successful, -1 if not successful
+    public int buyStock(Stock stock, int quantity) {
+        if (balance >= stock.getCurrentPrice() * quantity) {
+            for (int i = 0; i < quantity; i++) {
+                stock.setPurchasePrice(stock.getCurrentPrice());
+                addStock(stock);
+            }
+            subtractBalance(stock.getCurrentPrice() * quantity);
+            messageToUser = "You have successfully bought " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
+            updateWindows();
+            return 1;
+        }
+        else {
+            messageToUser = "You do not have enough money to buy " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
+            return -1;
+        }
+    }
+
+    // Sell a stock. Returns 1 if successful, -1 if not successful
+    public int sellStock(Stock stock, int quantity) {
+        if (portfolio.containsKey(stock.getSymbol())) {
+            if (portfolio.get(stock.getSymbol()).size() >= quantity) {
+                for (int i = 0; i < quantity; i++) {
+                    portfolio.get(stock.getSymbol()).remove(0);
+                }
+                if (portfolio.get(stock.getSymbol()).size() == 0) {
+                    portfolio.remove(stock.getSymbol());
+                }
+                addBalance(stock.getCurrentPrice() * quantity);
+                messageToUser = "You have successfully sold " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
+                updateWindows();
+                return 1;
+            }
+            else {
+                messageToUser = "You do not have enough shares of " + stock.getName() + " (" + stock.getSymbol() + ") to sell " + quantity + " shares.";
+                return -1;
+            }
+        }
+        else {
+            messageToUser = "You do not own any shares of " + stock.getName() + " (" + stock.getSymbol() + ").";
+            return -1;
+        }
+    }    
 }
