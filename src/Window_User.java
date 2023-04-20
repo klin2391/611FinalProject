@@ -8,8 +8,7 @@
  * as well as buy/sell stocks (not implemented yet)
  */
 
-import javax.swing.*;  
-import java.util.*;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;

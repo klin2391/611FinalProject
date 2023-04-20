@@ -9,13 +9,14 @@
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.sql.*;
 
 public class User {
     private String firstName;
     private String lastName;
     private String username;
     private String password;
-    private double balance;             // Cash Buying Power (realzed account value) in dollars
+    private double balance;             // Cash Buying Power (realized account value) in dollars
     private HashMap <String, ArrayList<Stock>> portfolio;
 
     // Default Constructor
@@ -115,5 +116,10 @@ public class User {
             stocks.add(stock);
             portfolio.put(stock.getSymbol(), stocks);
         }   
+    }
+
+    public static void main(String[] args) {
+        SQL sql = new SQL();
+        sql.insertCustomer("Spongebob", "Squarepants", "SBOB", "SQUARE", 10000);
     }
 }
