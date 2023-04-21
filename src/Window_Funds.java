@@ -68,7 +68,8 @@ public class Window_Funds{
                 else{
                     amount = Integer.parseInt(tf_amount.getText());
                     if (u.getBalance() < amount){
-                        Window_Alert we = new Window_Alert("Insufficient Funds!", false);
+//                        Window_Alert we = new Window_Alert("Insufficient Funds!", false);
+                        JOptionPane.showMessageDialog(f, "Insufficient Funds!");
                     }
                     else{
                         u.subtractBalance(amount);

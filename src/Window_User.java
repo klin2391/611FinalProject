@@ -19,17 +19,17 @@ import java.awt.event.*;
 public class Window_User implements ActionListener, Observer_User{
     private JFrame f;                           // Frame
     private User user;                          // User profile
-    JLabel l_nameFirst;
-    JLabel l_nameLast;
-    JLabel l_cashBuyPower;
-    JLabel l_accountValue;
-    JComboBox <String> cb_stocksOwned;          //Combo box allows drop down
-    JButton b_depositWithdraw;
-    JButton b_buySell;
-    JButton b_logout;
-    JPanel p_north;
-    JPanel p_center;
-    JPanel p_south;
+    private JLabel l_nameFirst;
+    private JLabel l_nameLast;
+    private JLabel l_cashBuyPower;
+    private JLabel l_accountValue;
+    private JComboBox <String> cb_stocksOwned;          //Combo box allows drop down
+    private JButton b_depositWithdraw;
+    private JButton b_buySell;
+    private JButton b_logout;
+    private JPanel p_north;
+    private JPanel p_center;
+    private JPanel p_south;
 
 
     // Constructor that takes a user
