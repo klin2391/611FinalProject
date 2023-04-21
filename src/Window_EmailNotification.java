@@ -1,5 +1,5 @@
 /*
- * Window_Error.java
+ * Window_EmailNotification.java
  * by Kevin Lin (lin2391@bu.edu)
  * 17APR2023
  * 
@@ -7,26 +7,18 @@
  */
 
 import javax.swing.*;
-import java.util.*;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.*;
 import java.awt.*;
 
-public class Window_Alert implements ActionListener{
+public class Window_EmailNotification implements ActionListener{
     private JFrame f;
     private JLabel l_alertMessage;
     private JButton b_ok;
     
-    public Window_Alert(String alertMessage, boolean isGood){
-        if (isGood){
-            f = new JFrame("Success!");
-        }
-        else{
-            f = new JFrame("Error!");
-        }
+    public Window_EmailNotification(String alertMessage, String email){
+
+        f = new JFrame(email);
         l_alertMessage= new JLabel(alertMessage + "\n");
         l_alertMessage.setBounds(0, 50, 200, 50);
         b_ok = new JButton("OK");

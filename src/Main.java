@@ -6,7 +6,7 @@ public class Main {
         history.add(5.0);
         history.add(2.0);
         history.add(11.0);
-        System.out.println ("TEST");
+//        System.out.println ("TEST");
         Value v = new Value(9, history);
         // System.out.println(v.getCurrent());
         Stock s = new Stock("Kevin", "KVN", v);
@@ -29,14 +29,18 @@ public class Main {
         // a.add(s1);
         // a.add(s2);
         // Window_Stock w = new Window_Stock(a);
-        User u = new User("Kevin", "Lin", "KEV", "password", 10, m.getStocks());
+        User u = new User("Kevin", "Lin", "kev@mail.com" , "KEV", "password", 10, m.getStocks());
         m.addUser(u);
         // u.addStock(s);
         // u.addStock(s1);
         // u.addStock(s2);
         // u.addStock(s3);
+        SQL sql = new SQL();
+        sql.insertCustomer(1, u.getFirstName(), u.getLastName(), u.getUsername(), u.getPassword(), (int) u.getBalance());
 
         Window_User wu = new Window_User(u);
+
+        Window_Root wr = new Window_Root();
 
         
         // Grapher gs = new Grapher();

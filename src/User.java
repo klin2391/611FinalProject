@@ -16,6 +16,7 @@ public class User implements User_Account{
     private String firstName;
     private String lastName;
     private String username;
+    private String email;
     private String password;
     private double balance;                                 // Cash Buying Power (realzed account value) in dollars
     private HashMap <String, ArrayList<Stock>> portfolio;   // Stocks owned by user
@@ -36,11 +37,12 @@ public class User implements User_Account{
     }
 
     // Constructor with values
-    public User(String firstName, String lastName, String username, String password, double balance, ArrayList<Stock> stockMarket) {
+    public User(String firstName, String lastName, String email, String username, String password, double balance, ArrayList<Stock> stockMarket) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.balance = balance;
         portfolio = new HashMap <String, ArrayList<Stock>>();
         messageToUser = "";
@@ -67,6 +69,10 @@ public class User implements User_Account{
 
     public double getBalance() {
         return balance;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     // Returns the value of all stocks owned
@@ -115,6 +121,10 @@ public class User implements User_Account{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void addBalance(double deposit) {
