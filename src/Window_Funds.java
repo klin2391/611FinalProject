@@ -19,9 +19,9 @@ public class Window_Funds{
     private ArrayList <Window_User> windows;    // Windows to update
     private JLabel l_prompt;
     private JTextField tf_amount;
-    private JButton b_Deposit;
-    private JButton b_Withdraw;
-    private JButton b_Cancel;
+    private JButton b_deposit;
+    private JButton b_withdraw;
+    private JButton b_cancel;
 
     // Default Constructor
     public Window_Funds(User u, Window_User wu) {
@@ -31,45 +31,54 @@ public class Window_Funds{
         f = new JFrame("Deposit/Withdraw Funds");
         l_prompt = new JLabel("Enter Amount: ");
         tf_amount= new JTextField();
-        b_Deposit= new JButton("Deposit");
-        b_Withdraw = new JButton("Withdraw");
-        b_Cancel = new JButton("Cancel");
+        b_deposit= new JButton("Deposit");
+        b_withdraw = new JButton("Withdraw");
+        b_cancel = new JButton("Cancel");
         l_prompt.setBounds(50, 50, 200, 30);
         tf_amount.setBounds(50, 100, 200, 30);
-        b_Deposit.setBounds(50, 150, 200, 30);
-        b_Withdraw.setBounds(50, 200, 200, 30);
-        b_Cancel.setBounds(50, 250, 200, 30);
+        b_deposit.setBounds(50, 150, 200, 30);
+        b_withdraw.setBounds(50, 200, 200, 30);
+        b_cancel.setBounds(50, 250, 200, 30);
         f.add(l_prompt);
         f.add(tf_amount);
-        f.add(b_Deposit);
-        f.add(b_Withdraw);
-        f.add(b_Cancel);
+        f.add(b_deposit);
+        f.add(b_withdraw);
+        f.add(b_cancel);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
-        b_Deposit.addActionListener(new ActionListener(){
+        b_deposit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                amount = Integer.parseInt(tf_amount.getText());
-                u.addBalance(amount);
-                updateWindows(u);
-                f.dispose();
-            }
-        });
-        b_Withdraw.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                amount = Integer.parseInt(tf_amount.getText());
-                if (u.getBalance() < amount){
-                    Window_Error we = new Window_Error("Insufficient Funds!");
+                if (tf_amount.getText().isEmpty()){
+                    ;
                 }
                 else{
-                    u.subtractBalance(amount);
+                    amount = Integer.parseInt(tf_amount.getText());
+                    u.addBalance(amount);
                     updateWindows(u);
                     f.dispose();
                 }
-                
             }
         });
-        b_Cancel.addActionListener(new ActionListener(){
+        b_withdraw.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if (tf_amount.getText().isEmpty()){
+                    ;
+                }
+                else{
+                    amount = Integer.parseInt(tf_amount.getText());
+                    if (u.getBalance() < amount){
+                        Window_Alert we = new Window_Alert("Insufficient Funds!", false);
+                    }
+                    else{
+                        u.subtractBalance(amount);
+                        updateWindows(u);
+                        f.dispose();
+                    }
+                }
+            }
+        });
+        b_cancel.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 f.dispose();
             }
@@ -87,4 +96,6 @@ public class Window_Funds{
             w.update(u);
         }
     }
+
+    
 }
