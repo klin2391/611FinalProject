@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 
 public class Window_Root implements ActionListener {
     private JFrame f;                           // Frame
+
+    private JPanel p;
     private User user;                          // User profile
     private JLabel l_welcome;
     private JButton b_createAccount;
@@ -29,7 +31,7 @@ public class Window_Root implements ActionListener {
         l_welcome = new JLabel("Welcome to Stock Simulator!");
         b_createAccount = new JButton("Create Account");
         b_login = new JButton("Login");
-
+        p = new JPanel();
         p_north = new JPanel();
         p_center = new JPanel();
         p_south = new JPanel();
@@ -41,10 +43,12 @@ public class Window_Root implements ActionListener {
         p_north.add(l_welcome);
         p_center.add(b_createAccount);
         p_center.add(b_login);
-        f.setLayout(new BorderLayout());
-        f.add(p_north, BorderLayout.NORTH);
-        f.add(p_center, BorderLayout.CENTER);
-        f.add(p_south, BorderLayout.SOUTH);
+        p.setLayout(new BorderLayout());
+        p.add(p_north, BorderLayout.NORTH);
+        p.add(p_center, BorderLayout.CENTER);
+        p.add(p_south, BorderLayout.SOUTH);
+//        f.setLayout(new BorderLayout());
+        f.add(p);
         f.setSize(500, 500);
 
         f.setVisible(true);
@@ -57,6 +61,10 @@ public class Window_Root implements ActionListener {
         }
         else if (e.getActionCommand().equals("Login")){
             new Window_Login();
+//            f.remove(p);
+//            System.out.println("Login button pressed");
+//            p = new Window_Login();
+//            f.add(p);
         }
     }
 }

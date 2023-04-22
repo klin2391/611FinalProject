@@ -93,6 +93,7 @@ import java.util.ArrayList;
     }
 
     public void setPrice(double newPrice){
+        this.getHistory().add(this.getCurrentPrice());
         price.setCurrent(newPrice);
     }
 

@@ -74,12 +74,12 @@ public class Window_Apply implements ActionListener {
             confirmPassword = pf_confirmPassword.getText();
             if (password.equals(confirmPassword)) {
                 // TODO: if (username is not taken) {
-                System.out.println("First Name: " + firstName);
-                System.out.println("Last Name: " + lastName);
-                System.out.println("Email: " + email);
-                System.out.println("Username: " + username);
-                System.out.println("Password: " + password);
-                System.out.println("Confirm Password: " + confirmPassword);
+                SQL sql = new SQL();
+                if (sql.customerExists(username)) {
+                    JOptionPane.showMessageDialog(null, "Username already exists.");
+                    return;
+                }
+                sql.insertPending(sql.getNextID("PendingCustomers"), firstName, lastName, email, username, password);
                 // TODO: Create user and add to database for pending users
                 JOptionPane.showMessageDialog(null, "Application created successfully! Check back soon");
                 f.dispose();

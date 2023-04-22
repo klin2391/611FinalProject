@@ -12,17 +12,14 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 
-public class User implements User_Account{
+public class User extends Person implements User_Account{
     private String firstName;
     private String lastName;
-    private String username;
-    private String email;
-    private String password;
     private double balance;                                 // Cash Buying Power (realzed account value) in dollars
+    private double profit;
     private HashMap <String, ArrayList<Stock>> portfolio;   // Stocks owned by user
     private String messageToUser;
     private ArrayList<Observer_User> windows;
-    private ArrayList<Stock> stockMarket;
 
     // Default Constructor
     public User() {
@@ -31,13 +28,17 @@ public class User implements User_Account{
         username = "jdoe";
         password = "password";
         balance = 10000;
+        profit = 0;
         portfolio = new HashMap <String, ArrayList<Stock>>();
         messageToUser = "";
         windows = new ArrayList<Observer_User>();
     }
-
+    //for pending customers
+    public User(String first, String last, String email, String username, String password){
+        this(first, last, email, username, password, 0, 0);
+    }
     // Constructor with values
-    public User(String firstName, String lastName, String email, String username, String password, double balance, ArrayList<Stock> stockMarket) {
+    public User(String firstName, String lastName, String email, String username, String password, double balance,double profit) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -47,7 +48,7 @@ public class User implements User_Account{
         portfolio = new HashMap <String, ArrayList<Stock>>();
         messageToUser = "";
         windows = new ArrayList<Observer_User>();
-        this.stockMarket = stockMarket;
+        this.profit = profit;
     }
 
     // Accessor methods
@@ -59,20 +60,11 @@ public class User implements User_Account{
         return lastName;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     public double getBalance() {
         return balance;
     }
-
-    public String getEmail() {
-        return email;
+    public double getProfit() {
+        return profit;
     }
 
     // Returns the value of all stocks owned
@@ -98,10 +90,6 @@ public class User implements User_Account{
         return portfolio.get(symbol);
     }
 
-    public ArrayList<Stock> getStockMarket() {
-        return stockMarket;
-    }
-
     public String getMessageToUser() {
         return messageToUser;
     }
@@ -113,18 +101,6 @@ public class User implements User_Account{
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void addBalance(double deposit) {
@@ -167,7 +143,6 @@ public class User implements User_Account{
     }
 
     public void updateStocks(ArrayList<Stock> stocks) {
-        stockMarket = stocks;
         for (Stock stock : stocks) {
             if (portfolio.containsKey(stock.getSymbol())) {
                 for (Stock ownedStock : portfolio.get(stock.getSymbol())) {
@@ -209,6 +184,7 @@ public class User implements User_Account{
             if (portfolio.get(stock.getSymbol()).size() >= quantity) {
                 for (int i = 0; i < quantity; i++) {
                     portfolio.get(stock.getSymbol()).remove(0);
+                    profit += stock.getCurrentPrice() - stock.getPurchasePrice();
                 }
                 if (portfolio.get(stock.getSymbol()).size() == 0) {
                     portfolio.remove(stock.getSymbol());

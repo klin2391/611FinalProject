@@ -9,8 +9,10 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-public class Window_Login implements ActionListener{
+public class Window_Login implements ActionListener {
+    // IF I WANT TO MAKE IT ALL ONE WINDOW, EXTENDS JPANEL
     private JFrame f;                           // Frame
+//    private JPanel p;                           // Panel
     private JLabel l_welcome;
     private JTextField tf_username;
     private JPasswordField pf_password;
@@ -24,6 +26,7 @@ public class Window_Login implements ActionListener{
     // Constructor
     public Window_Login(){
         f = new JFrame("Login");
+//        p = new JPanel();
         l_welcome = new JLabel("Welcome Back!");
         tf_username = new JTextField("Username");
         pf_password = new JPasswordField("Password");
@@ -54,9 +57,15 @@ public class Window_Login implements ActionListener{
             username = tf_username.getText();
             password = pf_password.getText();
             // VERIFY ACCOUNT
-            if(true /* TODO if account exists */){
-                // TODO recover user
+            SQL sql = new SQL();
+            if(sql.verifyCustomerAccount(username, password)){
+                user = sql.getUser(username);
                 new Window_User(user);
+                f.dispose();
+            }
+            else if (sql.verifyManagerAccount(username, password)){
+                Manager m = sql.getManager(username);
+                new Window_Manager(m);
                 f.dispose();
             }
             else{
@@ -64,7 +73,7 @@ public class Window_Login implements ActionListener{
             }
         }
         else if(e.getSource() == b_forgot){
-            f.dispose();
+//            f.dispose();
             new Window_Forgot();
         }
     }

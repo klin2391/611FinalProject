@@ -109,9 +109,9 @@
             return;
         }
 
-        for (int i = 0; i < user.getStockMarket().size(); i++){
-            if (user.getStockMarket().get(i).getSymbol().equals(symbol)){
-                selectedStock = user.getStockMarket().get(i);
+        for (int i = 0; i < Market.getStocks().size(); i++){
+            if (Market.getStocks().get(i).getSymbol().equals(symbol)){
+                selectedStock = Market.getStocks().get(i);
                 l_currentVal.setText("Current Value: " + selectedStock.getCurrentPrice());
                 user.getPortfolio().forEach((k, v) -> {
                     if (v.get(0).getSymbol().equals(symbol)){

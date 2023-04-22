@@ -13,18 +13,19 @@
 import java.util.*;
 
 public class Market {
-    private ArrayList<Stock> stocks;
+    private static ArrayList<Stock> stocks;
     private ArrayList<User> users;
-
+    private Manager manager;
     // Default Constructor
-    public Market() {
+    public Market(Manager m) {
+        manager = m;
         stocks = new ArrayList<Stock>();
         users = new ArrayList<User>();
     }
 
     // Constructor with values
-    public Market(ArrayList<Stock> stocks, ArrayList<User> users) {
-        this();
+    public Market(ArrayList<Stock> stocks, ArrayList<User> users, Manager m) {
+        this(m);
         if (stocks != null) {
             this.stocks = stocks;
         }
@@ -34,7 +35,7 @@ public class Market {
     }
 
     // Accessor methods
-    public ArrayList<Stock> getStocks() {
+    public static ArrayList<Stock> getStocks() {
         return stocks;
     }
 
