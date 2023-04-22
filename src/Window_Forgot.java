@@ -48,7 +48,9 @@ public class Window_Forgot implements ActionListener{
             // VERIFY ACCOUNT
             if(true /* TODO if account exists */){
                 // TODO recover user
-                new Window_EmailNotification( "Your password is: " + "TODO", email + " SUBJECT: Password Recovery" );
+                SQL sql = new SQL();
+                String pass = sql.recoverPassword(username, email);
+                new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
                 f.dispose();
             }
             else{
