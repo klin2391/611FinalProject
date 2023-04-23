@@ -17,7 +17,8 @@ public class SQL {
     }
 
     public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance) {
-        String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Customers(id, firstName, lastName, email, userName, password, balance) VALUES(?,?,?,?,?,?,?)";
+        //String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -35,7 +36,8 @@ public class SQL {
     }
 
     public void updatePassword(String username, String password){
-        String sql = "UPDATE Customers SET userName = ? WHERE email = ?";
+//        String sql = "UPDATE Customers SET userName = ? WHERE email = ?";
+        String sql = "UPDATE Customers SET password = ? WHERE userName = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -64,6 +66,22 @@ public class SQL {
         }
     }
 
+    public void updateBalance(String username, int balance){
+        String sql = "UPDATE Customers SET balance = ? WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setInt(1, balance);
+            pstmt.setString(2, username);
+            // update
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public int getNextID(String table){
         String sql = "SELECT * FROM " + table;
         int id = 0;
@@ -83,7 +101,8 @@ public class SQL {
     }
 
     public boolean customerExists(String username) {
-        String sql = "SELECT * FROM Customers WHERE email = ?";
+//        String sql = "SELECT * FROM Customers WHERE email = ?";
+        String sql = "SELECT * FROM Customers WHERE userName = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -142,7 +161,8 @@ public class SQL {
     }
 
     public boolean verifyCustomerAccount(String username, String password){
-        String sql = "SELECT * FROM Customers WHERE email = ? AND userName = ?";
+//        String sql = "SELECT * FROM Customers WHERE email = ? AND userName = ?";
+        String sql = "SELECT * FROM Customers WHERE userName = ? AND password = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -166,7 +186,8 @@ public class SQL {
     }
 
     public String recoverPassword(String username, String email){
-        String sql = "SELECT * FROM Customers WHERE email = ? AND balance = ?";
+//        String sql = "SELECT * FROM Customers WHERE email = ? AND balance = ?";
+        String sql = "SELECT * FROM Customers WHERE userName = ? AND email = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -190,7 +211,8 @@ public class SQL {
     }
 
     public User getUser(String username){
-            String sql = "SELECT * FROM Customers WHERE email = ?";
+//            String sql = "SELECT * FROM Customers WHERE email = ?";
+        String sql = "SELECT * FROM Customers WHERE userName = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -211,7 +233,8 @@ public class SQL {
         return null; }
 
     public void queryCustomer(String username){
-        String sql = "SELECT * FROM Customers WHERE email = ?";
+//        String sql = "SELECT * FROM Customers WHERE email = ?";
+        String sql = "SELECT * FROM Customers WHERE userName = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -415,5 +438,236 @@ public class SQL {
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public boolean checkIfUserBlacklisted(String username){
+        String sql = "SELECT * FROM Blacklisted WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the value
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            // loop through the result set
+            if (rs.next()) {
+                System.out.println("User is Blacklisted!");
+                return true;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("User is not Blacklisted!");
+        return false;
+    }
+
+    public void blockUser(User u){
+        String username = u.getUsername();
+        String sql = "INSERT INTO Blacklisted(userName) VALUES(?)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public ArrayList<User> getBlockedUsers(){
+        ArrayList<User> customers = new ArrayList<>();
+        String sql = "SELECT * FROM Blacklisted";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+
+            ResultSet rs  = pstmt.executeQuery();
+
+            // loop through the result set
+            while (rs.next()) {
+                customers.add(getUser( rs.getString("userName")));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return customers;
+    }
+
+    public void unblockUser(User u){
+        String username = u.getUsername();
+        String sql = "DELETE FROM Blacklisted WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setString(1, username);
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void unblockAllUsers() {
+        String sql = "DELETE FROM Blacklisted";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void addEligible(User u) {
+        String username = u.getUsername();
+        String sql = "INSERT INTO EligibleSupers(userName) VALUES(?)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean isEligibleToBeSuper(User u) {
+        String username = u.getUsername();
+        String sql = "SELECT * FROM EligibleSupers WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the value
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            // loop through the result set
+            if (rs.next()) {
+                System.out.println("User is Eligible!");
+                return true;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("User is not Eligible!");
+        return false;
+    }
+
+    public void updateProfit(String username, int profit) {
+        String sql = "UPDATE Customers SET profit = ? WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setInt(1, profit);
+            pstmt.setString(2, username);
+            // update
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getMinToBeSuper(){
+//        String sql = "SELECT * FROM Customers WHERE email = ?";
+        String sql = "SELECT * FROM Managers";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+
+            // loop through the result set
+            while (rs.next()) {
+                System.out.println(rs.getInt("minToBeSuper"));
+                return rs.getInt("minToBeSuper");
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    public void updateMinToBeSuper(int min){
+        String sql = "UPDATE Managers SET minToBeSuper = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setInt(1, min);
+            // update
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public ArrayList <User> getEligibleSupers(){
+        ArrayList<User> customers = new ArrayList<>();
+        String sql = "SELECT * FROM EligibleSupers WHERE Approved = 0";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+
+            ResultSet rs  = pstmt.executeQuery();
+
+            // loop through the result set
+            while (rs.next()) {
+                customers.add(getUser( rs.getString("userName")));
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return customers;
+    }
+
+    public void approveSuperUser(User u){
+        String username = u.getUsername();
+        String sql = "UPDATE EligibleSupers SET Approved = 1 WHERE userName = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the corresponding param
+            pstmt.setString(1, username);
+            // update
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean isSuperAccount(String username){
+        String sql = "SELECT * FROM EligibleSupers WHERE userName = ? and Approved = 1";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // set the value
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            // loop through the result set
+            if (rs.next()) {
+                System.out.println("User is Super!");
+                return true;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("User is not Super!");
+        return false;
     }
 }

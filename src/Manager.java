@@ -61,8 +61,10 @@ public class Manager extends Person{
 
     public void approveUser(User user){
         SQL sql = new SQL();
+        if (sql.customerExists(user.getUsername())){
+            return;
+        }
         approvedUsers.add(user);
-
         sql.insertCustomer(sql.getNextID("Customers"), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), user.getPassword(),(int) user.getBalance());
         pendingApproval.remove(user);
         sql.removeUserFromPending(user.getUsername());
@@ -122,5 +124,15 @@ public class Manager extends Person{
             }
         }
         stock.setPrice(price);
+    }
+
+    public ArrayList <User> getBlockedUsers(){
+        SQL sql = new SQL();
+        return sql.getBlockedUsers();
+    }
+
+    public ArrayList<User> getEligibleUsers(){
+        SQL sql = new SQL();
+        return sql.getEligibleSupers();
     }
 }
