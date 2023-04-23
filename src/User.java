@@ -105,10 +105,14 @@ public class User extends Person implements User_Account{
 
     public void addBalance(double deposit) {
         this.balance += deposit;
+        SQL sql = new SQL();
+        sql.updateBalance(this.username, (int) this.balance);
     }
 
     public void subtractBalance(double withdraw) {
         this.balance -= withdraw;
+        SQL sql = new SQL();
+        sql.updateBalance(this.username, (int) this.balance);
     }
 
     public void addStock(Stock stock) {
@@ -184,7 +188,13 @@ public class User extends Person implements User_Account{
             if (portfolio.get(stock.getSymbol()).size() >= quantity) {
                 for (int i = 0; i < quantity; i++) {
                     portfolio.get(stock.getSymbol()).remove(0);
+                    int prior = (int) this.profit;
                     profit += stock.getCurrentPrice() - stock.getPurchasePrice();
+                    SQL sql = new SQL();
+                    sql.updateProfit(this.username, (int) this.profit);
+                    if (prior < sql.getMinToBeSuper() && this.profit >= sql.getMinToBeSuper() && !sql.isEligibleToBeSuper(this)) {
+                        sql.addEligible(this);
+                    }
                 }
                 if (portfolio.get(stock.getSymbol()).size() == 0) {
                     portfolio.remove(stock.getSymbol());

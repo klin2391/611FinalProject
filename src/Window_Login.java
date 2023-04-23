@@ -60,8 +60,14 @@ public class Window_Login implements ActionListener {
             SQL sql = new SQL();
             if(sql.verifyCustomerAccount(username, password)){
                 user = sql.getUser(username);
-                new Window_User(user);
-                f.dispose();
+                if (sql.isSuperAccount(username)){
+                    new Window_Super(user);
+                    f.dispose();
+                }
+                else{
+                    new Window_User(user, 0);
+                    f.dispose();
+                }
             }
             else if (sql.verifyManagerAccount(username, password)){
                 Manager m = sql.getManager(username);

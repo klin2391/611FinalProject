@@ -35,7 +35,7 @@ public class Window_User implements ActionListener, Observer_User{
 
 
     // Constructor that takes a user
-    public Window_User(User u){
+    public Window_User(User u, int caller){         // Caller is 0 if called from login, 1 if called from manager
         this.user = u;                                      // Sets user
         register(user);
         f = new JFrame(u.getUsername());
@@ -47,7 +47,14 @@ public class Window_User implements ActionListener, Observer_User{
         b_depositWithdraw= new JButton("Deposit/Withdraw Funds");
         b_buySell = new JButton("Buy/Sell Stocks");
         b_settings = new JButton("Settings");
-        b_logout = new JButton("Logout");
+        if (caller == 0){                                   // If called from login
+            b_logout = new JButton("Logout");
+        }
+        else if (caller == 1){                              // If called from settings
+            b_logout = new JButton("Cancel");
+        }
+//        b_logout = new JButton("Logout");
+
         cb_stocksOwned = new JComboBox <String>();
         cb_stocksOwned.addItem("Select a Stock to View");
         for (String s : u.getPortfolio().keySet()){         //Adds owned stocks to list
@@ -78,10 +85,17 @@ public class Window_User implements ActionListener, Observer_User{
         p_center.add(l_profit);
         p_center.add(cb_stocksOwned);
         p_south = new JPanel(new FlowLayout());
-        p_south.add(b_depositWithdraw);
-        p_south.add(b_buySell);
-        p_south.add(b_settings);
-        p_south.add(b_logout);
+        if (caller == 0){                                   // If called from login
+            p_south.add(b_depositWithdraw);
+            p_south.add(b_buySell);
+            p_south.add(b_settings);
+            p_south.add(b_logout);
+        }
+        else if (caller == 1){                              // If called from settings
+            p_south.add(b_logout);
+        }
+
+
 
         // f.add(l_nameFirst);
         // f.add(l_nameLast);
@@ -96,25 +110,35 @@ public class Window_User implements ActionListener, Observer_User{
 
     // Implements action performed interface for user interaction
     public void actionPerformed(ActionEvent e){
-        if (e.getActionCommand().equals("Deposit/Withdraw Funds")){     // If button to deposit is clicked
+        SQL sql = new SQL();
+        if (e.getSource() == b_depositWithdraw){     // If button to deposit is clicked
+            if (sql.checkIfUserBlacklisted(user.getUsername())){
+                JOptionPane.showMessageDialog(null, "You are blacklisted from the system. Please contact an administrator.");
+                return;
+            }
             Window_Funds wf = new Window_Funds(user, this);
             return;
         }
-        else if (e.getActionCommand().equals("Buy/Sell Stocks")){            // If button to buy is clicked
+        else if (e.getSource() == b_buySell){            // If button to buy is clicked
             System.out.println("Buy/Sell Stocks");
+            if (sql.checkIfUserBlacklisted(user.getUsername())){
+                JOptionPane.showMessageDialog(null, "You are blacklisted from the system. Please contact an administrator.");
+                return;
+            }
             Window_Trade wbs = new Window_Trade(user.getPortfolio(), Market.getStocks(), user);
             return;
         }
-        else if (e.getActionCommand().equals("Settings")){
+        else if (e.getSource() == b_settings){           // If button to settings is clicked
             System.out.println("Settings");
             Window_Settings ws = new Window_Settings(user);
             return;
         }
-        else if (e.getActionCommand().equals("Logout")){
+        else if (e.getSource() == b_logout){
             System.out.println("Logout");
             f.dispose();
             return;
         }
+
 
         JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed
         String symbol = (String)cb.getSelectedItem();

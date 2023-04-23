@@ -11,7 +11,14 @@ public class Window_ManagerUsers implements ActionListener{
     private JButton b_notify;
     private JButton b_notifyAll;
     private JButton b_block;
+    private JTextField tf_notify;
+    private JButton b_update;
+
+    private JComboBox <String> cb_blocked;
+    private JButton b_unblock;
+    private JButton b_unblockAll;
     private JButton b_cancel;
+    private JComboBox <String> cb_eligible;
 
     public Window_ManagerUsers(Manager m){
         f = new JFrame("Manager");
@@ -22,9 +29,21 @@ public class Window_ManagerUsers implements ActionListener{
         b_notify = new JButton("Notify");
         b_notifyAll = new JButton("Notify All");
         b_block = new JButton("Block");
+        tf_notify = new JTextField();
+        b_update = new JButton("Update Minimum Balance");
         b_cancel = new JButton("Cancel");
         for (int i = 0; i < m.getApprovedUsers().size(); i++){
-            cb_users.addItem(m.getApprovedUsers().get(i).getFirstName() + " " + m.getApprovedUsers().get(i).getLastName());
+            cb_users.addItem(m.getApprovedUsers().get(i).getUsername());
+        }
+        b_unblock = new JButton("Unblock");
+        b_unblockAll = new JButton("Unblock All");
+        cb_blocked = new JComboBox<String>();
+        for (int i = 0; i < m.getBlockedUsers().size(); i++){
+            cb_blocked.addItem(m.getBlockedUsers().get(i).getUsername());
+        }
+        cb_eligible = new JComboBox<String>();
+        for (int i = 0; i < m.getEligibleUsers().size(); i++){
+            cb_eligible.addItem(m.getEligibleUsers().get(i).getUsername());
         }
 
         b_view.addActionListener(this);
@@ -32,21 +51,40 @@ public class Window_ManagerUsers implements ActionListener{
         b_notifyAll.addActionListener(this);
         b_block.addActionListener(this);
         b_cancel.addActionListener(this);
+        b_update.addActionListener(this);
+        b_unblock.addActionListener(this);
+        b_unblockAll.addActionListener(this);
+
+
 
         l_welcome.setBounds(50, 0, 200, 30);
         cb_users.setBounds(50, 50, 200, 30);
         b_view.setBounds(50, 100, 200, 30);
-        b_notify.setBounds(50, 150, 200, 30);
-        b_notifyAll.setBounds(50, 200, 200, 30);
-        b_block.setBounds(50, 250, 200, 30);
-        b_cancel.setBounds(50, 300, 200, 30);
+        b_block.setBounds(50, 150, 200, 30);
+        cb_blocked.setBounds(50, 200, 200, 30);
+        b_unblock.setBounds(50, 250, 200, 30);
+        b_unblockAll.setBounds(50, 300, 200, 30);
+        tf_notify.setBounds(50, 350, 200, 30);
+        b_update.setBounds(50, 400, 200, 30);
+        cb_eligible.setBounds(50, 450, 200, 30);
+        b_notify.setBounds(50, 500, 200, 30);
+        b_notifyAll.setBounds(50, 550, 200, 30);
+        b_cancel.setBounds(50, 600, 200, 30);
+
+
 
         f.add(l_welcome);
         f.add(cb_users);
         f.add(b_view);
+        f.add(b_block);
+        f.add(cb_blocked);
+        f.add(b_unblock);
+        f.add(b_unblockAll);
+        f.add(tf_notify);
+        f.add(b_update);
+        f.add(cb_eligible);
         f.add(b_notify);
         f.add(b_notifyAll);
-        f.add(b_block);
         f.add(b_cancel);
 
         f.setSize(500, 500);
@@ -54,20 +92,62 @@ public class Window_ManagerUsers implements ActionListener{
         f.setVisible(true);
     }
     public void actionPerformed(ActionEvent e) {
+        SQL sql = new SQL();
         if (e.getSource() == b_view) {
-            System.out.println("VIEW");
+            User u = sql.getUser((String)cb_users.getSelectedItem());
+            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1);
+        }
+        else if (e.getSource() == b_block) {
+            User u = sql.getUser((String)cb_users.getSelectedItem());
+            sql.blockUser(u);
+            update_frame();
+            JOptionPane.showMessageDialog(null, u.getUsername() + " has been blocked.");
+
+        }
+        else if (e.getSource() == b_unblock) {
+            User u = sql.getUser((String)cb_blocked.getSelectedItem());
+            sql.unblockUser(u);
+            update_frame();
+            JOptionPane.showMessageDialog(null, u.getUsername() + " has been unblocked.");
+
+        }
+        else if (e.getSource() == b_unblockAll) {
+            sql.unblockAllUsers();
+            update_frame();
+            JOptionPane.showMessageDialog(null, "All users have been unblocked.");
+
+        }
+        else if (e.getSource() == b_update) {
+            if (tf_notify.getText().isEmpty()){
+                return;
+            }
+            else{
+                int val = Integer.parseInt(tf_notify.getText());
+                sql.updateMinToBeSuper(val);
+                JOptionPane.showMessageDialog(null, "Minimum balance to be a super user has been updated to " + val);
+            }
         }
         else if (e.getSource() == b_notify) {
             System.out.println("NOTIFY");
+            String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
+            new Window_EmailNotification(s, m.getApprovedUsers().get(cb_eligible.getSelectedIndex()).getEmail());
+            sql.approveSuperUser(m.getEligibleUsers().get(cb_eligible.getSelectedIndex()));
         }
         else if (e.getSource() == b_notifyAll) {
             System.out.println("NOTIFY ALL");
+            String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
+            for (int i = 0; i < m.getApprovedUsers().size(); i++){
+                new Window_EmailNotification(s, m.getApprovedUsers().get(i).getEmail());
+            }
         }
-        else if (e.getSource() == b_block) {
-            System.out.println("BLOCK");
-        }
+
         else if (e.getSource() == b_cancel) {
             f.dispose();
         }
+    }
+
+    public void update_frame(){
+        f.dispose();
+        new Window_ManagerUsers(m);
     }
 }
