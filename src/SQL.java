@@ -17,7 +17,7 @@ public class SQL {
     }
 
     public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance) {
-        String sql = "INSERT INTO Customers(id, firstName, lastName, email, userName, password, balance) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -35,7 +35,7 @@ public class SQL {
     }
 
     public void updatePassword(String username, String password){
-        String sql = "UPDATE Customers SET password = ? WHERE userName = ?";
+        String sql = "UPDATE Customers SET userName = ? WHERE email = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -83,7 +83,7 @@ public class SQL {
     }
 
     public boolean customerExists(String username) {
-        String sql = "SELECT * FROM Customers WHERE userName = ?";
+        String sql = "SELECT * FROM Customers WHERE email = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -142,7 +142,7 @@ public class SQL {
     }
 
     public boolean verifyCustomerAccount(String username, String password){
-        String sql = "SELECT * FROM Customers WHERE userName = ? AND password = ?";
+        String sql = "SELECT * FROM Customers WHERE email = ? AND userName = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -166,7 +166,7 @@ public class SQL {
     }
 
     public String recoverPassword(String username, String email){
-        String sql = "SELECT * FROM Customers WHERE userName = ? AND email = ?";
+        String sql = "SELECT * FROM Customers WHERE email = ? AND balance = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -190,7 +190,7 @@ public class SQL {
     }
 
     public User getUser(String username){
-            String sql = "SELECT * FROM Customers WHERE userName = ?";
+            String sql = "SELECT * FROM Customers WHERE email = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -211,7 +211,7 @@ public class SQL {
         return null; }
 
     public void queryCustomer(String username){
-        String sql = "SELECT * FROM Customers WHERE userName = ?";
+        String sql = "SELECT * FROM Customers WHERE email = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
