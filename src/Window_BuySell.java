@@ -75,12 +75,15 @@
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_action ){
             if (tf_numStocks.getText().isEmpty()|| selectedStock == null){
-                new Window_Alert("Please select a stock and enter a number to " + action.getName().toLowerCase(), false);
+//                new Window_Alert("Please select a stock and enter a number to " + action.getName().toLowerCase(), false);
+                JOptionPane.showMessageDialog(f, "Please select a stock and enter a number to " + action.getName().toLowerCase());
+//                JOptionPane.showMessageDialog(null, "Please select a stock and enter a number to " + action.getName().toLowerCase());
                 return;
             }
             int numStocks = Integer.parseInt(tf_numStocks.getText());
             if (action.execute(user, selectedStock, numStocks) < 0){
-                new Window_Alert("Insufficient Resources!", false);
+//                new Window_Alert("Insufficient Resources!", false);
+                JOptionPane.showMessageDialog(f, "Insufficient Resources!");
                 return;
             }
 
@@ -106,9 +109,9 @@
             return;
         }
 
-        for (int i = 0; i < user.getStockMarket().size(); i++){
-            if (user.getStockMarket().get(i).getSymbol().equals(symbol)){
-                selectedStock = user.getStockMarket().get(i);
+        for (int i = 0; i < Market.getStocks().size(); i++){
+            if (Market.getStocks().get(i).getSymbol().equals(symbol)){
+                selectedStock = Market.getStocks().get(i);
                 l_currentVal.setText("Current Value: " + selectedStock.getCurrentPrice());
                 user.getPortfolio().forEach((k, v) -> {
                     if (v.get(0).getSymbol().equals(symbol)){
