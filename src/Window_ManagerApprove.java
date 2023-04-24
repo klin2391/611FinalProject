@@ -1,3 +1,11 @@
+/*
+ * Window_ManagerApprove.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This is a window for manager to approve new account requests
+ */
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -11,7 +19,9 @@ public class Window_ManagerApprove implements ActionListener{
     private JButton b_rejectAll;
     private JButton b_cancel;
     private String selectedUser;
+    private SQL sql;
 
+    // Constructor
     public Window_ManagerApprove(Manager m){
         f = new JFrame("Approve Users");
         this.m = m;
@@ -49,50 +59,44 @@ public class Window_ManagerApprove implements ActionListener{
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
-
-
+        sql = new SQL();
     }
 
+    // Updates the combo box fields
     public void updateComboBox(){
         cb_users.removeAllItems();
-        for (int i = 0; i < m.getPendingApproval().size(); i++){
+        for (int i = 0; i < m.getPendingApproval().size(); i++){            // adds the remaining pending users
             cb_users.addItem(m.getPendingApproval().get(i).getUsername());
         }
     }
 
+    // Action Listener
     public void actionPerformed(ActionEvent e) {
-        SQL sql = new SQL();
         if (e.getSource() == b_approve) {
             User u = sql.getPendingUser((String)cb_users.getSelectedItem());
             m.approveUser(u);
-            System.out.println("Approve " + u.getFirstName());
             updateComboBox();
-
         }
         else if (e.getSource() == b_approveAll) {
             while (cb_users.getSelectedItem() != null){
                 User u = sql.getPendingUser((String)cb_users.getSelectedItem());
                 m.approveUser(u);
-                System.out.println("Approve " + u.getFirstName());
                 updateComboBox();
             }
         }
         else if (e.getSource() == b_reject) {
             User u = sql.getPendingUser((String)cb_users.getSelectedItem());
             m.denyUser(u);
-            System.out.println("deny " + u.getFirstName());
             updateComboBox();
-            System.out.println("Reject");
         }
         else if (e.getSource() == b_rejectAll) {
             while (cb_users.getSelectedItem() != null){
                 User u = sql.getPendingUser((String)cb_users.getSelectedItem());
                 m.denyUser(u);
-                System.out.println("deny " + u.getFirstName());
                 updateComboBox();
             }
-            System.out.println("Reject All");
-        } else if (e.getSource() == b_cancel) {
+        }
+        else if (e.getSource() == b_cancel) {
             f.dispose();
         }
         else{

@@ -12,21 +12,19 @@ import java.awt.event.ActionEvent;
 public class Window_Login implements ActionListener {
     // IF I WANT TO MAKE IT ALL ONE WINDOW, EXTENDS JPANEL
     private JFrame f;                           // Frame
-//    private JPanel p;                           // Panel
     private JLabel l_welcome;
     private JTextField tf_username;
     private JPasswordField pf_password;
     private JButton b_login;
     private JButton b_forgot;
-
     private String username;
     private String password;
     private User user;
+    private SQL sql;
 
     // Constructor
     public Window_Login(){
         f = new JFrame("Login");
-//        p = new JPanel();
         l_welcome = new JLabel("Welcome Back!");
         tf_username = new JTextField("Username");
         pf_password = new JPasswordField("Password");
@@ -48,28 +46,26 @@ public class Window_Login implements ActionListener {
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
+        sql = new SQL();
     }
 
     // Action Listener
-
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == b_login){
             username = tf_username.getText();
             password = pf_password.getText();
-            // VERIFY ACCOUNT
-            SQL sql = new SQL();
-            if(sql.verifyCustomerAccount(username, password)){
+            if(sql.verifyCustomerAccount(username, password)){  // VERIFY ACCOUNT
                 user = sql.getUser(username);
-                if (sql.isSuperAccount(username)){
+                if (sql.isSuperAccount(username)){          // IF SUPER ACCOUNT
                     new Window_Super(user);
                     f.dispose();
                 }
-                else{
+                else{                                       // IF NORMAL ACCOUNT
                     new Window_User(user, 0);
                     f.dispose();
                 }
             }
-            else if (sql.verifyManagerAccount(username, password)){
+            else if (sql.verifyManagerAccount(username, password)){     // IF manager
                 Manager m = sql.getManager(username);
                 new Window_Manager(m);
                 f.dispose();
@@ -79,7 +75,6 @@ public class Window_Login implements ActionListener {
             }
         }
         else if(e.getSource() == b_forgot){
-//            f.dispose();
             new Window_Forgot();
         }
     }

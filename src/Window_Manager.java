@@ -1,3 +1,11 @@
+/*
+ * Window_Manager.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This is a window for manager to do stuff
+ */
+
 import javax.swing.*;
 import java.util.*;
 import java.awt.event.*;
@@ -45,7 +53,6 @@ public class Window_Manager implements ActionListener{
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
 
-
         f.add(l_welcome);
         f.add(b_approve);
         f.add(b_viewUsers);
@@ -62,11 +69,9 @@ public class Window_Manager implements ActionListener{
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == b_approve) {
-            System.out.println("Approve");
             new Window_ManagerApprove(m);
         }
         else if (e.getSource() == b_viewUsers) {
-            System.out.println("View Users");
             new Window_ManagerUsers(m);
         }
         else if (e.getSource() == b_addStock) {

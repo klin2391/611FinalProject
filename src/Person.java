@@ -1,3 +1,14 @@
+/*
+ * Person.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This abstract class represents a person
+ * who signs into the system. Has a username, password,
+ * and email
+ *
+ */
+
 public abstract class Person {
     protected String username;
     protected String password;

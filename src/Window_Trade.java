@@ -31,6 +31,7 @@ public class Window_Trade implements ActionListener, Observer_User{
         register(user);
         this.myStocks = mine;
         this.worldStocks = world;
+
         f = new JFrame("Trade");
         l_browse = new JLabel("Browse Stocks");
         l_owned = new JLabel("My Stocks");
@@ -41,24 +42,19 @@ public class Window_Trade implements ActionListener, Observer_User{
         b_cancel = new JButton("Cancel");
         cb_allStocks.addItem("Select a Stock");
         cb_stocksOwned.addItem("Select a Stock");
-        System.out.println("DBG1");
         for (int i = 0; i < worldStocks.size(); i++){
             cb_allStocks.addItem(worldStocks.get(i).getSymbol());
         }
-        System.out.println("DBG1.5");
-        System.out.println(myStocks.size());
-        // for (int i = 0; i < myStocks.size(); i++){
-        //     cb_stocksOwned.addItem(myStocks.get(i).get(0).getSymbol());
-        // }
         myStocks.forEach((k, v) -> {
             cb_stocksOwned.addItem(k);
         });
-        System.out.println("DBG2");
+
         cb_allStocks.addActionListener(this);
         cb_stocksOwned.addActionListener(this);
         b_buy.addActionListener(this);
         b_sell.addActionListener(this);
         b_cancel.addActionListener(this);
+
         l_browse.setBounds(50, 50, 200, 30);
         l_owned.setBounds(50, 250, 200, 30);
         cb_allStocks.setBounds(50, 100, 200, 30);
@@ -66,6 +62,7 @@ public class Window_Trade implements ActionListener, Observer_User{
         b_buy.setBounds(50, 150, 200, 30);
         b_sell.setBounds(50, 350, 200, 30);
         b_cancel.setBounds(50, 400, 200, 30);
+
         f.add(l_browse);
         f.add(l_owned);
         f.add(cb_allStocks);
@@ -77,7 +74,6 @@ public class Window_Trade implements ActionListener, Observer_User{
         f.setSize(800, 800);
         f.setLayout(null);
         f.setVisible(true);
-        System.out.println("DBG3");
     }
     
 
@@ -88,8 +84,7 @@ public class Window_Trade implements ActionListener, Observer_User{
                 String symbol = (String)cb_allStocks.getSelectedItem();
                 for (int i = 0; i < worldStocks.size(); i++){
                     if (worldStocks.get(i).getSymbol().equals(symbol)){
-                        Window_Stock wsi = new Window_Stock(new ArrayList<Stock>(Arrays.asList(worldStocks.get(i))), false);
-                        // TODO do not show num owned and value owned
+                        Window_Stock wsi = new Window_Stock(new ArrayList<Stock>(Arrays.asList(worldStocks.get(i))), false);        // false means it's not owned
                     }
                 }
             }
@@ -105,14 +100,12 @@ public class Window_Trade implements ActionListener, Observer_User{
             }
         }
         else if (e.getSource() == b_buy){
-            // Window_BuyStock wbs = new Window_BuyStock(worldStocks, user);
             TradeBehavior tb = new TradeBehavior_Buy();
             Window_BuySell wbs = new Window_BuySell(worldStocks, user, tb );
         }
         else if (e.getSource() == b_sell){
             TradeBehavior tb = new TradeBehavior_Sell();
             Window_BuySell wss = new Window_BuySell(worldStocks, user, tb);
-            // Window_SellStock wss = new Window_SellStock(myStocks, user);
         }
         else if (e.getSource() == b_cancel){
             f.dispose();

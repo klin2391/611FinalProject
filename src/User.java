@@ -20,6 +20,7 @@ public class User extends Person implements User_Account{
     private HashMap <String, ArrayList<Stock>> portfolio;   // Stocks owned by user
     private String messageToUser;
     private ArrayList<Observer_User> windows;
+    private SQL sql;
 
     // Default Constructor
     public User() {
@@ -32,6 +33,7 @@ public class User extends Person implements User_Account{
         portfolio = new HashMap <String, ArrayList<Stock>>();
         messageToUser = "";
         windows = new ArrayList<Observer_User>();
+        sql = new SQL();
     }
     //for pending customers
     public User(String first, String last, String email, String username, String password){
@@ -49,6 +51,7 @@ public class User extends Person implements User_Account{
         messageToUser = "";
         windows = new ArrayList<Observer_User>();
         this.profit = profit;
+        sql = new SQL();
     }
 
     // Accessor methods
@@ -105,14 +108,12 @@ public class User extends Person implements User_Account{
 
     public void addBalance(double deposit) {
         this.balance += deposit;
-        SQL sql = new SQL();
-        sql.updateBalance(this.username, (int) this.balance);
+        sql.updateBalance(this.username, (int) this.balance);       // updates db
     }
 
     public void subtractBalance(double withdraw) {
         this.balance -= withdraw;
-        SQL sql = new SQL();
-        sql.updateBalance(this.username, (int) this.balance);
+        sql.updateBalance(this.username, (int) this.balance);       // updates db
     }
 
     public void addStock(Stock stock) {
@@ -184,34 +185,33 @@ public class User extends Person implements User_Account{
 
     // Sell a stock. Returns 1 if successful, -1 if not successful
     public int sellStock(Stock stock, int quantity) {
-        if (portfolio.containsKey(stock.getSymbol())) {
-            if (portfolio.get(stock.getSymbol()).size() >= quantity) {
+        if (portfolio.containsKey(stock.getSymbol())) {     // if they own
+            if (portfolio.get(stock.getSymbol()).size() >= quantity) {  // if they own enough
                 for (int i = 0; i < quantity; i++) {
                     portfolio.get(stock.getSymbol()).remove(0);
                     int prior = (int) this.profit;
                     profit += stock.getCurrentPrice() - stock.getPurchasePrice();
-                    SQL sql = new SQL();
-                    sql.updateProfit(this.username, (int) this.profit);
-                    if (prior < sql.getMinToBeSuper() && this.profit >= sql.getMinToBeSuper() && !sql.isEligibleToBeSuper(this)) {
+                    sql.updateProfit(this.username, (int) this.profit);                 // updates db
+                    if (prior < sql.getMinToBeSuper() && this.profit >= sql.getMinToBeSuper() && !sql.isEligibleToBeSuper(this)) {      // Checks to see if just crossed threshold
                         sql.addEligible(this);
                     }
                 }
-                if (portfolio.get(stock.getSymbol()).size() == 0) {
+                if (portfolio.get(stock.getSymbol()).size() == 0) { // if they sold last one
                     portfolio.remove(stock.getSymbol());
                 }
                 addBalance(stock.getCurrentPrice() * quantity);
                 messageToUser = "You have successfully sold " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
                 updateWindows();
-                return 1;
+                return 1;       //success
             }
             else {
                 messageToUser = "You do not have enough shares of " + stock.getName() + " (" + stock.getSymbol() + ") to sell " + quantity + " shares.";
-                return -1;
+                return -1;      // not enough shares
             }
         }
         else {
             messageToUser = "You do not own any shares of " + stock.getName() + " (" + stock.getSymbol() + ").";
-            return -1;
+            return -1;          // not owned
         }
     }    
 }

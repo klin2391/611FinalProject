@@ -20,13 +20,13 @@ public class Window_Apply implements ActionListener {
     private JPasswordField pf_password;
     private JPasswordField pf_confirmPassword;
     private JButton b_apply;
-
     private String firstName;
     private String lastName;
     private String email;
     private String username;
     private String password;
     private String confirmPassword;
+    private SQL sql;
 
 
     // Constructor
@@ -61,7 +61,7 @@ public class Window_Apply implements ActionListener {
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
-
+        sql = new SQL();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -72,15 +72,12 @@ public class Window_Apply implements ActionListener {
             username = tf_username.getText();
             password = pf_password.getText();
             confirmPassword = pf_confirmPassword.getText();
-            if (password.equals(confirmPassword)) {
-                // TODO: if (username is not taken) {
-                SQL sql = new SQL();
-                if (sql.customerExists(username)) {
+            if (password.equals(confirmPassword)) { // Matches
+                if (sql.customerExists(username)) { // Username already exists
                     JOptionPane.showMessageDialog(null, "Username already exists.");
                     return;
                 }
                 sql.insertPending(sql.getNextID("PendingCustomers"), firstName, lastName, email, username, password);
-                // TODO: Create user and add to database for pending users
                 JOptionPane.showMessageDialog(null, "Application created successfully! Check back soon");
                 f.dispose();
             }
@@ -89,6 +86,4 @@ public class Window_Apply implements ActionListener {
             }
         }
     }
-
-
 }
