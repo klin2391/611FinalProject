@@ -1,3 +1,10 @@
+/*
+ * Window_Forgot.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * Window for user to recover password
+ */
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -12,6 +19,7 @@ public class Window_Forgot implements ActionListener{
 
     private String username;
     private String email;
+    private SQL sql;
 
     // Constructor
     public Window_Forgot(){
@@ -37,6 +45,7 @@ public class Window_Forgot implements ActionListener{
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
+        sql = new SQL();
     }
 
     // Action Listener
@@ -46,9 +55,7 @@ public class Window_Forgot implements ActionListener{
             username = tf_username.getText();
             email = tf_email.getText();
             // VERIFY ACCOUNT
-            if(true /* TODO if account exists */){
-                // TODO recover user
-                SQL sql = new SQL();
+            if(sql.customerExists(username)){
                 String pass = sql.recoverPassword(username, email);
                 new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
                 f.dispose();

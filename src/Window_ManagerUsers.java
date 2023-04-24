@@ -1,3 +1,11 @@
+/*
+ * Window_ManagerUsers.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This is a window for manager to interact with the users
+ */
+
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -13,12 +21,12 @@ public class Window_ManagerUsers implements ActionListener{
     private JButton b_block;
     private JTextField tf_notify;
     private JButton b_update;
-
     private JComboBox <String> cb_blocked;
     private JButton b_unblock;
     private JButton b_unblockAll;
     private JButton b_cancel;
     private JComboBox <String> cb_eligible;
+    private SQL sql;
 
     public Window_ManagerUsers(Manager m){
         f = new JFrame("Manager");
@@ -55,8 +63,6 @@ public class Window_ManagerUsers implements ActionListener{
         b_unblock.addActionListener(this);
         b_unblockAll.addActionListener(this);
 
-
-
         l_welcome.setBounds(50, 0, 200, 30);
         cb_users.setBounds(50, 50, 200, 30);
         b_view.setBounds(50, 100, 200, 30);
@@ -70,8 +76,6 @@ public class Window_ManagerUsers implements ActionListener{
         b_notify.setBounds(50, 500, 200, 30);
         b_notifyAll.setBounds(50, 550, 200, 30);
         b_cancel.setBounds(50, 600, 200, 30);
-
-
 
         f.add(l_welcome);
         f.add(cb_users);
@@ -90,34 +94,31 @@ public class Window_ManagerUsers implements ActionListener{
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
+        sql = new SQL();
     }
     public void actionPerformed(ActionEvent e) {
-        SQL sql = new SQL();
-        if (e.getSource() == b_view) {
-            User u = sql.getUser((String)cb_users.getSelectedItem());
+        String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
+        if (e.getSource() == b_view) {                  // View user
             new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1);
         }
-        else if (e.getSource() == b_block) {
+        else if (e.getSource() == b_block) {            // Block user
             User u = sql.getUser((String)cb_users.getSelectedItem());
             sql.blockUser(u);
             update_frame();
             JOptionPane.showMessageDialog(null, u.getUsername() + " has been blocked.");
-
         }
-        else if (e.getSource() == b_unblock) {
+        else if (e.getSource() == b_unblock) {          // Unblock user
             User u = sql.getUser((String)cb_blocked.getSelectedItem());
             sql.unblockUser(u);
             update_frame();
             JOptionPane.showMessageDialog(null, u.getUsername() + " has been unblocked.");
-
         }
-        else if (e.getSource() == b_unblockAll) {
+        else if (e.getSource() == b_unblockAll) {        // Unblock all users
             sql.unblockAllUsers();
             update_frame();
             JOptionPane.showMessageDialog(null, "All users have been unblocked.");
-
         }
-        else if (e.getSource() == b_update) {
+        else if (e.getSource() == b_update) {             // Update minimum balance
             if (tf_notify.getText().isEmpty()){
                 return;
             }
@@ -127,20 +128,18 @@ public class Window_ManagerUsers implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Minimum balance to be a super user has been updated to " + val);
             }
         }
-        else if (e.getSource() == b_notify) {
-            System.out.println("NOTIFY");
-            String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
-            new Window_EmailNotification(s, m.getApprovedUsers().get(cb_eligible.getSelectedIndex()).getEmail());
+        else if (e.getSource() == b_notify) {               // Notify user
+            if (cb_eligible.getSelectedIndex() == -1){
+                return;
+            }
+            new Window_EmailNotification(s, m.getEligibleUsers().get(cb_eligible.getSelectedIndex()).getEmail());
             sql.approveSuperUser(m.getEligibleUsers().get(cb_eligible.getSelectedIndex()));
         }
-        else if (e.getSource() == b_notifyAll) {
-            System.out.println("NOTIFY ALL");
-            String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
-            for (int i = 0; i < m.getApprovedUsers().size(); i++){
-                new Window_EmailNotification(s, m.getApprovedUsers().get(i).getEmail());
+        else if (e.getSource() == b_notifyAll) {        // Notify all users
+            for (int i = 0; i < m.getEligibleUsers().size(); i++){
+                new Window_EmailNotification(s, m.getEligibleUsers().get(i).getEmail());
             }
         }
-
         else if (e.getSource() == b_cancel) {
             f.dispose();
         }

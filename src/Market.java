@@ -16,6 +16,7 @@ public class Market {
     private static ArrayList<Stock> stocks;
     private ArrayList<User> users;
     private Manager manager;
+
     // Default Constructor
     public Market(Manager m) {
         manager = m;

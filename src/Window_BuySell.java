@@ -26,13 +26,10 @@
     // Default Constructor
     public Window_BuySell(ArrayList <Stock> s, User u, TradeBehavior a){
         this.user = u;
-        this.action = a;
-        
+        this.action = a;        // buy or sell
         f = new JFrame(a.getName());
-
         cb_stocks = new JComboBox <String>();
         cb_stocks.addItem("Select a Stock to " + a.getName().toLowerCase());
-
         if (a.getName() == "Sell"){
             for (int i = 0; i < u.getPortfolio().keySet().toArray().length; i++)
                 cb_stocks.addItem((String) u.getPortfolio().keySet().toArray()[i]);
@@ -69,24 +66,18 @@
         f.setVisible(true);
         
     }
-    
-
     // Action Listener for the JComboBox
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_action ){
             if (tf_numStocks.getText().isEmpty()|| selectedStock == null){
-//                new Window_Alert("Please select a stock and enter a number to " + action.getName().toLowerCase(), false);
                 JOptionPane.showMessageDialog(f, "Please select a stock and enter a number to " + action.getName().toLowerCase());
-//                JOptionPane.showMessageDialog(null, "Please select a stock and enter a number to " + action.getName().toLowerCase());
                 return;
             }
             int numStocks = Integer.parseInt(tf_numStocks.getText());
-            if (action.execute(user, selectedStock, numStocks) < 0){
-//                new Window_Alert("Insufficient Resources!", false);
+            if (action.execute(user, selectedStock, numStocks) < 0){        // fail
                 JOptionPane.showMessageDialog(f, "Insufficient Resources!");
                 return;
             }
-
             f.dispose();
         }
         else if (e.getSource() == b_cancel){
@@ -95,12 +86,11 @@
         else{
             JComboBox cb = (JComboBox)e.getSource();
             String symbol = (String)cb.getSelectedItem();
-            System.out.println(symbol);
-            
             updatePage(symbol);
         }
     }
 
+    // Updates the page when a new stock is selected
     public void updatePage(String symbol) {
         if (symbol.equals("Select a Stock to " + action.getName().toLowerCase())){
             l_currentVal.setText("Current Value: -");
@@ -108,7 +98,6 @@
             selectedStock = null;
             return;
         }
-
         for (int i = 0; i < Market.getStocks().size(); i++){
             if (Market.getStocks().get(i).getSymbol().equals(symbol)){
                 selectedStock = Market.getStocks().get(i);

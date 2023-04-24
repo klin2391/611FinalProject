@@ -57,24 +57,26 @@ public class Window_Stock implements ActionListener{
         l_numberOfShares.setBounds(50, 600, 200, 30);
         l_totalValue.setBounds(50, 650, 200, 30);
         cb_stocksOwned.setBounds(50, 700, 200, 30);
+
         cb_stocksOwned.addActionListener(this);
         f.setLayout(new BorderLayout());
         p_info = new JPanel();
-        // p_info.setLayout(null);
+
         p_info.add(l_name);
         p_info.add(l_currentPrice);
-        if (isOwned){
+
+        if (isOwned){   // If the stocks are owned, then show the total cost and profit
             p_info.add(l_profit);
             p_info.add(l_numberOfShares);
             p_info.add(l_totalCost);
         }
+
         f.add(p_info, BorderLayout.NORTH);
         f.add(p_graph, BorderLayout.SOUTH);
         
         f.setSize(1000, 1000);
         
         f.setVisible(true);
-        // f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // Action Listener for the JComboBox

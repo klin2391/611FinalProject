@@ -1,3 +1,11 @@
+/*
+ * Window_Super.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This is a window for supers to see after login
+ */
+
 import java.awt.event.*;
 import javax.swing.*;
 
@@ -8,7 +16,6 @@ public class Window_Super implements ActionListener{
     private JButton b_options;
     private JButton b_logout;
     private User user;
-    private SQL sql;
 
     // Constructor
     public Window_Super(User user){
@@ -18,17 +25,21 @@ public class Window_Super implements ActionListener{
         b_stocks = new JButton("Stocks");
         b_options = new JButton("Options");
         b_logout = new JButton("Logout");
+
         l_welcome.setBounds(50, 50, 200, 30);
         b_stocks.setBounds(50, 100, 200, 30);
         b_options.setBounds(50, 150, 200, 30);
         b_logout.setBounds(50, 200, 200, 30);
+
         b_stocks.addActionListener(this);
         b_options.addActionListener(this);
         b_logout.addActionListener(this);
+
         f.add(l_welcome);
         f.add(b_stocks);
         f.add(b_options);
         f.add(b_logout);
+
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);

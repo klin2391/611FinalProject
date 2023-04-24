@@ -1,3 +1,11 @@
+/*
+ * Window_Settings.java
+ * by Kevin Lin (lin2391@bu.edu)
+ * 23APR2023
+ *
+ * This is a window for people to change their passwords
+ */
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -11,12 +19,12 @@ public class Window_Settings implements ActionListener{
     private JPasswordField tf_passwordNew;
     private JLabel l_passwordConfirm;
     private JPasswordField tf_passwordConfirm;
-
     private JButton b_changePassword;
     private JButton b_cancel;
 
+    // Constructor
     public Window_Settings(Person p){
-            f = new JFrame("Settings");
+        f = new JFrame("Settings");
         this.p = p;
         l_welcome = new JLabel("Welcome, " + p.getUsername() + "!");
         l_password = new JLabel("Current Password:");

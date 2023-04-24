@@ -38,6 +38,7 @@ public class Window_User implements ActionListener, Observer_User{
     public Window_User(User u, int caller){         // Caller is 0 if called from login, 1 if called from manager
         this.user = u;                                      // Sets user
         register(user);
+
         f = new JFrame(u.getUsername());
         l_nameFirst = new JLabel("First Name: " + u.getFirstName());
         l_nameLast = new JLabel("Last Name: " + u.getLastName());
@@ -53,7 +54,6 @@ public class Window_User implements ActionListener, Observer_User{
         else if (caller == 1){                              // If called from settings
             b_logout = new JButton("Cancel");
         }
-//        b_logout = new JButton("Logout");
 
         cb_stocksOwned = new JComboBox <String>();
         cb_stocksOwned.addItem("Select a Stock to View");
@@ -65,6 +65,7 @@ public class Window_User implements ActionListener, Observer_User{
         b_buySell.addActionListener(this);
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
+
         l_nameFirst.setBounds(50, 50, 200, 30);
         l_nameLast.setBounds(50, 100, 200, 30);
         l_cashBuyPower.setBounds(50, 150, 200, 30);
@@ -75,6 +76,7 @@ public class Window_User implements ActionListener, Observer_User{
         b_buySell.setBounds(50, 350, 200, 30);
         b_settings.setBounds(50, 450, 200, 30);
         b_logout.setBounds(50, 400, 200, 30);
+
         f.setLayout(new BorderLayout());
         p_north = new JPanel();
         p_north.add(l_nameFirst);
@@ -95,17 +97,11 @@ public class Window_User implements ActionListener, Observer_User{
             p_south.add(b_logout);
         }
 
-
-
-        // f.add(l_nameFirst);
-        // f.add(l_nameLast);
         f.add(p_north, BorderLayout.NORTH);
         f.add(p_center, BorderLayout.CENTER);
         f.add(p_south, BorderLayout.SOUTH);
         f.setSize(800, 800);
-        
         f.setVisible(true);
-//        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     // Implements action performed interface for user interaction
@@ -120,7 +116,6 @@ public class Window_User implements ActionListener, Observer_User{
             return;
         }
         else if (e.getSource() == b_buySell){            // If button to buy is clicked
-            System.out.println("Buy/Sell Stocks");
             if (sql.checkIfUserBlacklisted(user.getUsername())){
                 JOptionPane.showMessageDialog(null, "You are blacklisted from the system. Please contact an administrator.");
                 return;
@@ -129,16 +124,13 @@ public class Window_User implements ActionListener, Observer_User{
             return;
         }
         else if (e.getSource() == b_settings){           // If button to settings is clicked
-            System.out.println("Settings");
             Window_Settings ws = new Window_Settings(user);
             return;
         }
-        else if (e.getSource() == b_logout){
-            System.out.println("Logout");
+        else if (e.getSource() == b_logout){             // If button to logout is clicked
             f.dispose();
             return;
         }
-
 
         JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed
         String symbol = (String)cb.getSelectedItem();
@@ -153,12 +145,10 @@ public class Window_User implements ActionListener, Observer_User{
         l_nameLast.setText("Last Name: " + u.getLastName());
         l_cashBuyPower.setText("Cash Buying Power: " + u.getBalance());
         l_accountValue.setText("Account Value: " + u.getTotalValue());
-        
-        // Only add to combo box if new stock is added
-        if (u.getPortfolio().size() > cb_stocksOwned.getItemCount() - 1){
+        if (u.getPortfolio().size() > cb_stocksOwned.getItemCount() - 1){       // If new stock is added
             cb_stocksOwned.addItem((String) u.getPortfolio().keySet().toArray()[u.getPortfolio().size() - 1]);
         }
-        if (u.getPortfolio().size() < cb_stocksOwned.getItemCount() - 1){
+        if (u.getPortfolio().size() < cb_stocksOwned.getItemCount() - 1){       // If stock is removed
             if (u.getPortfolio().size() == 0) {
                 for (int i = 0; i < cb_stocksOwned.getItemCount() ; i++){
                     if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
