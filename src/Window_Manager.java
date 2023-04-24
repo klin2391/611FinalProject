@@ -19,6 +19,7 @@ public class Window_Manager implements ActionListener{
     private JButton b_addStock;
     private JButton b_removeStock;
     private JButton b_changeStock;
+    private JButton b_trackProfit;
     private JButton b_settings;
     private JButton b_logout;
 
@@ -33,6 +34,8 @@ public class Window_Manager implements ActionListener{
         b_addStock = new JButton("Add Stock");
         b_removeStock = new JButton("Remove Stock");
         b_changeStock = new JButton("Change Stock");
+        b_trackProfit = new JButton("Track Profit");
+
         b_settings = new JButton("Settings");
         b_logout = new JButton("Logout");
 
@@ -42,6 +45,7 @@ public class Window_Manager implements ActionListener{
         b_addStock.setBounds(50, 150, 200, 30);
         b_removeStock.setBounds(50, 200, 200, 30);
         b_changeStock.setBounds(50, 250, 200, 30);
+        b_trackProfit.setBounds(50, 250, 200, 30);
         b_settings.setBounds(50, 300, 200, 30);
         b_logout.setBounds(50, 350, 200, 30);
 
@@ -50,6 +54,7 @@ public class Window_Manager implements ActionListener{
         b_addStock.addActionListener(this);
         b_removeStock.addActionListener(this);
         b_changeStock.addActionListener(this);
+        b_trackProfit.addActionListener(this);
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
 
@@ -59,6 +64,7 @@ public class Window_Manager implements ActionListener{
         f.add(b_addStock);
         f.add(b_removeStock);
         f.add(b_changeStock);
+        f.add(b_trackProfit);
         f.add(b_settings);
         f.add(b_logout);
 
@@ -82,6 +88,9 @@ public class Window_Manager implements ActionListener{
         }
         else if (e.getSource() == b_changeStock) {
             System.out.println("Change Stock");
+        }
+        else if (e.getSource() == b_trackProfit) { // show the table of profit of all users
+            new Window_ManagerProfitTable(m);
         }
         else if (e.getSource() == b_settings) {
             new Window_Settings(m);
