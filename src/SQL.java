@@ -12,8 +12,7 @@ import java.util.*;
 
 public class SQL {
     private Connection connect() throws ClassNotFoundException {
-        // SQLite connection string
-        String url = "jdbc:sqlite:/Users/kevin/stocktrading.db";
+        String url = "jdbc:sqlite:/Users/kevin/stocktrading.db"; // SQLite connection to string
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -308,19 +307,23 @@ public class SQL {
     }
 
     // Inserts a manager into the database
-    public void insertManager(int id, String email, String lastName, String username, String password) {
-        String sql = "INSERT INTO Managers(id, email, lastName, userName, password) VALUES(?,?,?,?,?)";
+    public void insertManager(int id, String firstName, String lastName, String username, String password, String email, int minToBeSuper) {
+        String sql = "INSERT INTO Managers(id, firstName, lastName, userName, password,email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.setString(2, email);
+            pstmt.setString(2, firstName);
             pstmt.setString(3, lastName);
             pstmt.setString(4, username);
             pstmt.setString(5, password);
+            pstmt.setString(6, email);
+            pstmt.setInt(7, minToBeSuper);
             pstmt.executeUpdate();
+            System.out.println("Manager Account Created!");
         }
         catch (SQLException | ClassNotFoundException e) {
+            System.out.println("KEV DBG");
             System.out.println(e.getMessage());
         }
     }
