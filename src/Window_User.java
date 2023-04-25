@@ -37,7 +37,7 @@ public class Window_User implements ActionListener, Observer_User{
     // Constructor that takes a user
     public Window_User(User u, int caller){         // Caller is 0 if called from login, 1 if called from manager
         this.user = u;                                      // Sets user
-        register(user);
+        register(this.user);
         f = new JFrame(u.getUsername());
         l_nameFirst = new JLabel("First Name: " + u.getFirstName());
         l_nameLast = new JLabel("Last Name: " + u.getLastName());

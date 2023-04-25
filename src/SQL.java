@@ -4,12 +4,11 @@ import java.util.*;
 public class SQL {
     private Connection connect() throws ClassNotFoundException {
         // SQLite connection string
-        String url = "jdbc:sqlite:/Users/kevin/stocktrading.db";
+        String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(url);
-            System.out.println("Connection Successful!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -352,7 +351,7 @@ public class SQL {
     }
 
     public void insertManager(int id, String email, String lastName, String username, String password) {
-        String sql = "INSERT INTO Managers(id, email, lastName, userName, password) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO Managers(id, firstName, lastName, userName, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

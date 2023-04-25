@@ -79,7 +79,7 @@ public class Window_Apply implements ActionListener {
                     JOptionPane.showMessageDialog(null, "Username already exists.");
                     return;
                 }
-                sql.insertPending(sql.getNextID("PendingCustomers"), firstName, lastName, email, username, password);
+                sql.insertCustomer(sql.getNextID("Customers"), firstName, lastName, email, username, password, 0);
                 // TODO: Create user and add to database for pending users
                 JOptionPane.showMessageDialog(null, "Application created successfully! Check back soon");
                 f.dispose();
