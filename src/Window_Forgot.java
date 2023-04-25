@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Window_Forgot extends JPanel implements ActionListener{
-//    private JFrame f;                           // Frame
+    //    private JFrame f;                           // Frame
     private JLabel l_welcome;
     private JTextField tf_username;
     private JTextField tf_email;
