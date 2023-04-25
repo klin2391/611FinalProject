@@ -17,6 +17,7 @@ public class User extends Person implements User_Account{
     private String lastName;
     private double balance;                                 // Cash Buying Power (realzed account value) in dollars
     private double profit;
+    private double unrealizedProfit;
     private HashMap <String, ArrayList<Stock>> portfolio;   // Stocks owned by user
     private String messageToUser;
     private ArrayList<Observer_User> windows;
@@ -30,6 +31,7 @@ public class User extends Person implements User_Account{
         password = "password";
         balance = 10000;
         profit = 0;
+        unrealizedProfit = 0;
         portfolio = new HashMap <String, ArrayList<Stock>>();
         messageToUser = "";
         windows = new ArrayList<Observer_User>();
@@ -54,6 +56,20 @@ public class User extends Person implements User_Account{
         sql = new SQL();
     }
 
+    public void setUnrealizedProfit(){ //calculate the unrealized profit when needed
+        double purchasePrice = 0;
+        for (String symbol : portfolio.keySet()) { // calculate the purchase price for all stocks a user has
+            for (Stock stock : portfolio.get(symbol)) {
+                purchasePrice += stock.getPurchasePrice();
+            }
+        }
+        this.unrealizedProfit = getStockValue() - purchasePrice;
+    }
+
+    public double getUnrealizedProfit(){
+        return this.unrealizedProfit;
+    }
+
     // Accessor methods
     public String getFirstName() {
         return firstName;
@@ -68,6 +84,7 @@ public class User extends Person implements User_Account{
     }
     public double getProfit() {
         return profit;
+
     }
 
     // Returns the value of all stocks owned

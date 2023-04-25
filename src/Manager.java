@@ -103,6 +103,12 @@ public class Manager extends Person{
         stock.setPrice(price);
     }
 
+    public void randomUpdateAll(ArrayList<Stock> stocks){ //update value of all stock randomly
+        for (Stock s : stocks){
+            randomUpdateStock(s);
+        }
+    }
+
     //update value of one stock manually
     public void updateStock(Stock stock){
         Scanner scanner = new Scanner(System.in);
@@ -121,5 +127,30 @@ public class Manager extends Person{
         stock.setPrice(price);
     }
 
+    public String[][] trackProfit(){ //track profit of all users
+        String[][] table = new String[approvedUsers.size()][3];
+        int idx = 0;
+        for(User user : approvedUsers){
+            user.setUnrealizedProfit(); //calculate the unrealized profit
+            double unrealizedProfit = user.getUnrealizedProfit();
+            double realizedProfit = user.getProfit();
+            String name = user.getUsername();
 
+            table[idx][0] = name;
+            table[idx][1] = String.valueOf(realizedProfit);
+            table[idx][2] = String.valueOf(unrealizedProfit);
+            idx+=1;
+        }
+        return table;
+    }
+
+    public ArrayList<User> over10k(){ // return the users who have mare than 10k profit
+        ArrayList<User> goodUser = new ArrayList<>();
+        for(User user : approvedUsers){
+            if (user.getProfit() >= 10000){
+                goodUser.add(user);
+            }
+        }
+        return goodUser;
+    }
 }
