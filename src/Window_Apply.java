@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Window_Apply implements ActionListener {
+public class Window_Apply extends JFrame implements ActionListener {
     private JFrame f;                           // Frame
     private JLabel l_applyNow;
     private JTextField tf_firstName;
@@ -20,6 +20,7 @@ public class Window_Apply implements ActionListener {
     private JPasswordField pf_password;
     private JPasswordField pf_confirmPassword;
     private JButton b_apply;
+    private JButton b_back;
     private String firstName;
     private String lastName;
     private String email;
@@ -40,6 +41,7 @@ public class Window_Apply implements ActionListener {
         pf_password = new JPasswordField("Password");
         pf_confirmPassword = new JPasswordField("Password");
         b_apply = new JButton("Apply");
+        b_back = new JButton("Back");
 
         l_applyNow.setBounds(50, 50, 200, 30);
         tf_firstName.setBounds(50, 100, 200, 30);
@@ -50,6 +52,8 @@ public class Window_Apply implements ActionListener {
         pf_confirmPassword.setBounds(50, 350, 200, 30);
         b_apply.setBounds(50, 400, 200, 30);
         b_apply.addActionListener(this);
+        b_back.setBounds(50, 450, 200, 30);
+        b_back.addActionListener(this);
         f.add(l_applyNow);
         f.add(tf_firstName);
         f.add(tf_lastName);
@@ -58,7 +62,8 @@ public class Window_Apply implements ActionListener {
         f.add(pf_password);
         f.add(pf_confirmPassword);
         f.add(b_apply);
-        f.setSize(500, 500);
+        f.add(b_back);
+        f.setSize(500, 600);
         f.setLayout(null);
         f.setVisible(true);
         sql = new SQL();
@@ -84,6 +89,10 @@ public class Window_Apply implements ActionListener {
             else {
                 JOptionPane.showMessageDialog(null, "Passwords do not match.");
             }
+        }
+        else if (e.getActionCommand().equals("Back")) {
+            new Window_Root();
+            f.dispose();
         }
     }
 }
