@@ -13,7 +13,8 @@ import java.util.*;
 public class SQL {
     private Connection connect() throws ClassNotFoundException {
         // SQLite connection string
-        String url = "jdbc:sqlite:/Users/kevin/stocktrading.db";
+        //String url = "jdbc:sqlite:/Users/kevin/stocktrading.db";
+        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
