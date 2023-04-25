@@ -8,11 +8,14 @@
  */
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
-public class Window_Root implements ActionListener {
+public class Window_Root extends JFrame implements ActionListener  {
     private JFrame f;                           // Frame
     private JPanel p;
     private User user;                          // User profile
@@ -34,6 +37,7 @@ public class Window_Root implements ActionListener {
         p_north = new JPanel();
         p_center = new JPanel();
         p_south = new JPanel();
+        p.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         l_welcome.setBounds(50, 50, 200, 30);
         b_createAccount.setBounds(50, 100, 200, 30);
@@ -46,7 +50,7 @@ public class Window_Root implements ActionListener {
         p_center.add(b_createAccount);
         p_center.add(b_login);
 
-        p.setLayout(new BorderLayout());
+        p.setLayout(new BorderLayout(100,100));
         p.add(p_north, BorderLayout.NORTH);
         p.add(p_center, BorderLayout.CENTER);
         p.add(p_south, BorderLayout.SOUTH);
@@ -58,11 +62,13 @@ public class Window_Root implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
-        if (e.getActionCommand().equals("Create Account")){
+        if (e.getSource() == b_createAccount){
             new Window_Apply();
+            f.dispose();
         }
-        else if (e.getActionCommand().equals("Login")){
+        else if (e.getSource() == b_login){
             new Window_Login();
+            f.dispose();
         }
     }
 }

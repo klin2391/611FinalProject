@@ -91,7 +91,7 @@ public class Window_ManagerUsers implements ActionListener{
         f.add(b_notifyAll);
         f.add(b_cancel);
 
-        f.setSize(500, 500);
+        f.setSize(500, 800);
         f.setLayout(null);
         f.setVisible(true);
         sql = new SQL();

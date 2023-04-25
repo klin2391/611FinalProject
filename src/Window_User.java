@@ -127,6 +127,7 @@ public class Window_User implements ActionListener, Observer_User{
             return;
         }
         else if (e.getSource() == b_logout){             // If button to logout is clicked
+            new Window_Root();
             f.dispose();
             return;
         }

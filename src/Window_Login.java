@@ -9,7 +9,7 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-public class Window_Login implements ActionListener {
+public class Window_Login extends JPanel implements ActionListener {
     // IF I WANT TO MAKE IT ALL ONE WINDOW, EXTENDS JPANEL
     private JFrame f;                           // Frame
     private JLabel l_welcome;
@@ -17,6 +17,7 @@ public class Window_Login implements ActionListener {
     private JPasswordField pf_password;
     private JButton b_login;
     private JButton b_forgot;
+    private JButton b_back;
     private String username;
     private String password;
     private User user;
@@ -30,6 +31,7 @@ public class Window_Login implements ActionListener {
         pf_password = new JPasswordField("Password");
         b_login = new JButton("Login");
         b_forgot = new JButton("Forgot Password");
+        b_back = new JButton("Back");
 
         l_welcome.setBounds(50, 50, 200, 30);
         tf_username.setBounds(50, 100, 200, 30);
@@ -38,11 +40,14 @@ public class Window_Login implements ActionListener {
         b_forgot.setBounds(50, 250, 200, 30);
         b_login.addActionListener(this);
         b_forgot.addActionListener(this);
+        b_back.setBounds(50, 300, 200, 30);
+        b_back.addActionListener(this);
         f.add(l_welcome);
         f.add(tf_username);
         f.add(pf_password);
         f.add(b_login);
         f.add(b_forgot);
+        f.add(b_back);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
@@ -81,6 +86,10 @@ public class Window_Login implements ActionListener {
         }
         else if(e.getSource() == b_forgot){
             new Window_Forgot();
+        }
+        else if(e.getSource() == b_back){
+            new Window_Root();
+            f.dispose();
         }
     }
 

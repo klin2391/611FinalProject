@@ -1,7 +1,17 @@
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+//        String ui = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
+        String textureUI = "com.jtattoo.plaf.texture.TextureLookAndFeel";
+        try {
+
+            UIManager.setLookAndFeel(textureUI);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         ArrayList<Double> history = new ArrayList<Double>();
         history.add(5.0);
         history.add(2.0);
