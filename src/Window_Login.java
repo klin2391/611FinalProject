@@ -51,10 +51,15 @@ public class Window_Login implements ActionListener {
 
     // Action Listener
     public void actionPerformed(ActionEvent e){
+        // if the login button is pressed
         if(e.getSource() == b_login){
+            // get the username and password
             username = tf_username.getText();
             password = pf_password.getText();
-            if(sql.verifyCustomerAccount(username, password)){  // VERIFY ACCOUNT
+            // VERIFY ACCOUNT
+            SQL sql = new SQL();
+            // query the database and check if the username and password match and exist in the database
+            if(sql.verifyCustomerAccount(username, password)){
                 user = sql.getUser(username);
                 if (sql.isSuperAccount(username)){          // IF SUPER ACCOUNT
                     new Window_Super(user);
