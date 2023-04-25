@@ -128,7 +128,7 @@ public class Manager extends Person{
     }
 
     public String[][] trackProfit(){ //track profit of all users
-        String table [][] = new String[approvedUsers.size()][3];
+        String[][] table = new String[approvedUsers.size()][3];
         int idx = 0;
         for(User user : approvedUsers){
             user.setUnrealizedProfit(); //calculate the unrealized profit
@@ -144,8 +144,13 @@ public class Manager extends Person{
         return table;
     }
 
-//    public ArrayList<User> over10k(){
-//        for(User user : )
-//    }
-
+    public ArrayList<User> over10k(){ // return the users who have mare than 10k profit
+        ArrayList<User> goodUser = new ArrayList<>();
+        for(User user : approvedUsers){
+            if (user.getProfit() >= 10000){
+                goodUser.add(user);
+            }
+        }
+        return goodUser;
+    }
 }
