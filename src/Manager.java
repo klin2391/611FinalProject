@@ -60,7 +60,7 @@ public class Manager extends Person{
             return;
         }
         approvedUsers.add(user);                            // Add the user to the approved users list
-        sql.insertCustomer(sql.getNextID("Customers"), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), user.getPassword(),(int) user.getBalance());
+        sql.insertCustomer(sql.getNextID("Customers"), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), user.getPassword(),(int) user.getBalance(), (int) user.getProfit());
         pendingApproval.remove(user);                       // Remove the user from the pending approval list
         sql.removeUserFromPending(user.getUsername());
         new Window_EmailNotification("User " + user.getFirstName() + " has been approved!", user.getEmail());
