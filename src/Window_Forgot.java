@@ -9,8 +9,8 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-public class Window_Forgot implements ActionListener{
-    private JFrame f;                           // Frame
+public class Window_Forgot extends JPanel implements ActionListener{
+//    private JFrame f;                           // Frame
     private JLabel l_welcome;
     private JTextField tf_username;
     private JTextField tf_email;
@@ -23,7 +23,7 @@ public class Window_Forgot implements ActionListener{
 
     // Constructor
     public Window_Forgot(){
-        f = new JFrame("Forgot Password");
+//        f = new JFrame("Forgot Password");
         l_welcome = new JLabel("Forgot Password");
         tf_username = new JTextField("Username");
         tf_email = new JTextField("Email");
@@ -37,14 +37,22 @@ public class Window_Forgot implements ActionListener{
         b_cancel.setBounds(50, 250, 200, 30);
         b_submit.addActionListener(this);
         b_cancel.addActionListener(this);
-        f.add(l_welcome);
-        f.add(tf_username);
-        f.add(tf_email);
-        f.add(b_submit);
-        f.add(b_cancel);
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(l_welcome);
+        this.add(tf_username);
+        this.add(tf_email);
+        this.add(b_submit);
+        this.add(b_cancel);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
+//        f.add(l_welcome);
+//        f.add(tf_username);
+//        f.add(tf_email);
+//        f.add(b_submit);
+//        f.add(b_cancel);
+//        f.setSize(500, 500);
+//        f.setLayout(null);
+//        f.setVisible(true);
         sql = new SQL();
     }
 
@@ -58,14 +66,14 @@ public class Window_Forgot implements ActionListener{
             if(sql.customerExists(username)){
                 String pass = sql.recoverPassword(username, email);
                 new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
-                f.dispose();
+//                f.dispose();
             }
             else{
-                JOptionPane.showMessageDialog(f, "Incorrect Username or Email");
+                JOptionPane.showMessageDialog(null, "Incorrect Username or Email");
             }
         }
         else if(e.getSource() == b_cancel){
-            f.dispose();
+//            f.dispose();
             new Window_Login();
         }
     }
