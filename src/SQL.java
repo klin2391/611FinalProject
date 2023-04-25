@@ -27,8 +27,8 @@ public class SQL {
     }
 
     // Adds a customer to the database
-    public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance) {
-        String sql = "INSERT INTO Customers(id, firstName, lastName, email, userName, password, balance) VALUES(?,?,?,?,?,?,?)";
+    public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance, int profit) {
+        String sql = "INSERT INTO Customers(id, firstName, lastName, email, userName, password, balance,profit) VALUES(?,?,?,?,?,?,?,?)";
         //String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
@@ -40,6 +40,7 @@ public class SQL {
             pstmt.setString(5, username);
             pstmt.setString(6, password);
             pstmt.setInt(7, balance);
+            pstmt.setInt(8, profit);
             pstmt.executeUpdate();
         }
         catch (SQLException | ClassNotFoundException e) {
@@ -127,19 +128,19 @@ public class SQL {
             System.out.println(e.getMessage());
         }
 
-        sql = "SELECT * FROM PendingCustomers WHERE userName = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            pstmt.setString(1,username);
-            ResultSet rs  = pstmt.executeQuery();
-            if (rs.next()) {
-                System.out.println("Customer Exists!");
-                return true;
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+//        sql = "SELECT * FROM PendingCustomers WHERE userName = ?";
+//        try (Connection conn = this.connect();
+//             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+//            pstmt.setString(1,username);
+//            ResultSet rs  = pstmt.executeQuery();
+//            if (rs.next()) {
+//                System.out.println("Customer Exists!");
+//                return true;
+//            }
+//        }
+//        catch (SQLException | ClassNotFoundException e) {
+//            System.out.println(e.getMessage());
+//        }
 
         sql = "SELECT * FROM Managers WHERE userName = ?";
         try (Connection conn = this.connect();
