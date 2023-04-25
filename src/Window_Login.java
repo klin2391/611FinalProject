@@ -22,10 +22,12 @@ public class Window_Login extends JPanel implements ActionListener {
     private String password;
     private User user;
     private SQL sql;
+    private JPanel p;
 
     // Constructor
     public Window_Login(){
         f = new JFrame("Login");
+        p = new JPanel();
         l_welcome = new JLabel("Welcome Back!");
         tf_username = new JTextField("Username");
         pf_password = new JPasswordField("Password");
@@ -42,12 +44,16 @@ public class Window_Login extends JPanel implements ActionListener {
         b_forgot.addActionListener(this);
         b_back.setBounds(50, 300, 200, 30);
         b_back.addActionListener(this);
-        f.add(l_welcome);
-        f.add(tf_username);
-        f.add(pf_password);
-        f.add(b_login);
-        f.add(b_forgot);
-        f.add(b_back);
+        p.add(l_welcome);
+        p.add(tf_username);
+        p.add(pf_password);
+        p.add(b_login);
+        p.add(b_forgot);
+        p.add(b_back);
+        p.setSize(500, 500);
+        p.setLayout(null);
+        p.setVisible(true);
+        f.add(p);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
@@ -85,7 +91,10 @@ public class Window_Login extends JPanel implements ActionListener {
             }
         }
         else if(e.getSource() == b_forgot){
-            new Window_Forgot();
+            p.setVisible(false);
+            f.remove(p);
+            p = new Window_Forgot();
+            f.add(p);
         }
         else if(e.getSource() == b_back){
             new Window_Root();
