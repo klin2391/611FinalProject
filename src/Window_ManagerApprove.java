@@ -42,7 +42,7 @@ public class Window_ManagerApprove implements ActionListener{
         b_rejectAll.addActionListener(this);
         b_cancel.addActionListener(this);
 
-        cb_users.setBounds(50, 50, 200, 30);
+        cb_users.setBounds(50, 50, 200, 60);
         b_approve.setBounds(50, 100, 200, 30);
         b_approveAll.setBounds(50, 150, 200, 30);
         b_reject.setBounds(50, 200, 200, 30);

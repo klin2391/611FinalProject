@@ -12,15 +12,13 @@ import java.util.*;
 
 public class SQL {
     private Connection connect() throws ClassNotFoundException {
-
-        String url = "jdbc:sqlite:/Users/kevin/stocktrading.db"; // SQLite connection to string
+        // SQLite connection string
+        String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(url);
-            System.out.println("Connection Successful!");
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return conn;
@@ -307,10 +305,9 @@ public class SQL {
         }
         return customers;
     }
-
     // Inserts a manager into the database
     public void insertManager(int id, String firstName, String lastName, String username, String password, String email, int minToBeSuper) {
-        String sql = "INSERT INTO Managers(id, firstName, lastName, userName, password,email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Managers(id, firstName, lastName, userName, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
