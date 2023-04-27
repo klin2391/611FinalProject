@@ -45,9 +45,9 @@ public class Window_Manager implements ActionListener{
         b_addStock.setBounds(50, 150, 200, 30);
         b_removeStock.setBounds(50, 200, 200, 30);
         b_changeStock.setBounds(50, 250, 200, 30);
-        b_trackProfit.setBounds(50, 250, 200, 30);
-        b_settings.setBounds(50, 300, 200, 30);
-        b_logout.setBounds(50, 350, 200, 30);
+        b_trackProfit.setBounds(50, 300, 200, 30);
+        b_settings.setBounds(50, 350, 200, 30);
+        b_logout.setBounds(50, 400, 200, 30);
 
         b_approve.addActionListener(this);
         b_viewUsers.addActionListener(this);

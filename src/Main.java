@@ -36,9 +36,9 @@ public class Main {
         // u.addStock(s1);
         // u.addStock(s2);
         // u.addStock(s3);
-//        SQL sql = new SQL();
+        SQL sql = new SQL();
 //        sql.insertCustomer(1, u.getFirstName(), u.getLastName(), u.getEmail(), u.getUsername(), u.getPassword(),(int) u.getBalance());
-//        sql.insertManager(1, m1.getEmail(), "", m1.getUsername(), m1.getPassword());
+        sql.insertManager(1, m1.getEmail(), "Kao",  m1.getUsername(), m1.getPassword());
 //        sql.queryCustomer("KEV");
 //        sql.verifyCustomer("EV", "passwo");
 //        Window_User wu = new Window_User(sql.getUser("KEV"));
