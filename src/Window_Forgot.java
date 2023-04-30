@@ -56,6 +56,7 @@ public class Window_Forgot extends JPanel implements ActionListener{
             email = tf_email.getText();
             // VERIFY ACCOUNT
             if(sql.customerExists(username)){
+                System.out.println("Username exist");
                 String pass = sql.recoverPassword(username, email);
                 new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
 //                f.dispose();

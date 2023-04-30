@@ -16,13 +16,23 @@ public class Market {
     private static ArrayList<Stock> stocks;
     private ArrayList<User> users;
     private Manager manager;
+    private SQL sql = new SQL();
 
     // Default Constructor
     public Market(Manager m) {
         manager = m;
-        stocks = new ArrayList<Stock>();
+        //stocks = new ArrayList<Stock>();
+        this.stocks = sql.getAllAvailableStocks();
         users = new ArrayList<User>();
     }
+
+//    public Market(ArrayList<User> users, Manager m) {
+//        this(m);
+//        this.stocks = sql.getAllStocks();
+//        if (users != null) {
+//            this.users = users;
+//        }
+//    }
 
     // Constructor with values
     public Market(ArrayList<Stock> stocks, ArrayList<User> users, Manager m) {
