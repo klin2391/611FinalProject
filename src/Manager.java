@@ -15,6 +15,8 @@ import java.util.Random;
 public class Manager extends Person{
     private ArrayList<User> pendingApproval;
     private ArrayList<User> approvedUsers;
+    private ArrayList<Stock> stocks;
+    private ArrayList<Stock> availableStocks;
     private SQL sql;
 
     public Manager(){
@@ -34,7 +36,8 @@ public class Manager extends Person{
         sql = new SQL();
         approvedUsers = sql.getAllCustomers();
         pendingApproval = sql.getAllPendingCustomers();
-
+        stocks = sql.getAllStocks();
+        availableStocks = sql.getAllAvailableStocks();
     }
 
     public ArrayList<User> getPendingApproval(){
@@ -54,13 +57,24 @@ public class Manager extends Person{
         return sql.getEligibleSupers();
     }
 
+    public ArrayList<Stock> getStocks(){
+        stocks = sql.getAllStocks();
+        return stocks;
+    }
+    public ArrayList<Stock> getAvailableStocks(){
+        availableStocks = sql.getAllAvailableStocks();
+        return availableStocks;
+    }
+
+
+
     // Approves a single user
     public void approveUser(User user){
         if (sql.customerExists(user.getUsername())){        // If the user already exists, don't add them
             return;
         }
         approvedUsers.add(user);                            // Add the user to the approved users list
-        sql.insertCustomer(sql.getNextID("Customers"), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), user.getPassword(),(int) user.getBalance());
+        sql.insertCustomer(sql.getNextID("Customers"), user.getFirstName(), user.getLastName(), user.getEmail(), user.getUsername(), user.getPassword(),(int) user.getBalance(), (int) user.getProfit());
         pendingApproval.remove(user);                       // Remove the user from the pending approval list
         sql.removeUserFromPending(user.getUsername());
         new Window_EmailNotification("User " + user.getFirstName() + " has been approved!", user.getEmail());
@@ -90,7 +104,7 @@ public class Manager extends Person{
         double maxFlunctuation = price * 0.05;
         Random rand = new Random();
 
-        double flunctuation = rand.nextDouble() * maxFlunctuation;
+        double flunctuation = new Double(Math.round(rand.nextDouble() * maxFlunctuation * 100))/100;
 
         int flip = rand.nextInt() % 2; //flip 0 decrease; flip 1increase
 
@@ -101,30 +115,18 @@ public class Manager extends Person{
             price += flunctuation;
         }
         stock.setPrice(price);
+        sql.updateStockPrice(stock.getName(), price);
     }
 
-    public void randomUpdateAll(ArrayList<Stock> stocks){ //update value of all stock randomly
+    public void randomUpdateAll(){ //update value of all stock randomly
         for (Stock s : stocks){
             randomUpdateStock(s);
         }
     }
 
     //update value of one stock manually
-    public void updateStock(Stock stock){
-        Scanner scanner = new Scanner(System.in);
-        double price = 0.0;
-        boolean validInput = false;
-
-        while (!validInput) {
-            if (scanner.hasNextDouble()) {
-                price = scanner.nextDouble();
-                validInput = true;
-            } else {
-//                messageToManager = "Invalid input. Please enter a double value.";
-                scanner.next();
-            }
-        }
-        stock.setPrice(price);
+    public void updateStock(String stockName, double price){
+        sql.updateStockPrice(stockName, price);
     }
 
     public String[][] trackProfit(){ //track profit of all users
@@ -144,13 +146,13 @@ public class Manager extends Person{
         return table;
     }
 
-    public ArrayList<User> over10k(){ // return the users who have mare than 10k profit
-        ArrayList<User> goodUser = new ArrayList<>();
-        for(User user : approvedUsers){
-            if (user.getProfit() >= 10000){
-                goodUser.add(user);
-            }
-        }
-        return goodUser;
-    }
+//    public ArrayList<User> over10k(){ // return the users who have mare than 10k profit
+//        ArrayList<User> goodUser = new ArrayList<>();
+//        for(User user : approvedUsers){
+//            if (user.getProfit() >= 10000){
+//                goodUser.add(user);
+//            }
+//        }
+//        return goodUser;
+//    }
 }

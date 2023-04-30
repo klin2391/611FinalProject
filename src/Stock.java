@@ -13,7 +13,10 @@ import java.util.ArrayList;
     private String name;
     private String symbol;
     private Value price;                // Tracks current and past prices of stocks
+
+
     private double purchasePrice;
+    private double currentPrice;
     private boolean owned;
     
     // Default Constructor
@@ -32,6 +35,15 @@ import java.util.ArrayList;
         this.price = price;
         this.owned = false;
     }
+
+     public Stock(String name, String symbol, double currentPrice){
+         this.name = name;
+         this.symbol = symbol;
+         this.currentPrice = currentPrice;
+         this.price = new Value();
+         setPrice(currentPrice);
+         this.owned = false;
+     }
 
     // Accessor methods
     public String getName(){
