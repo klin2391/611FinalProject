@@ -13,7 +13,8 @@ import java.util.*;
 public class SQL {
     private Connection connect() throws ClassNotFoundException {
         // SQLite connection string
-        String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
+        //String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
+        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -26,7 +27,7 @@ public class SQL {
 
     // Adds a customer to the database
     public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance, int profit) {
-        String sql = "INSERT INTO Customers(id, firstName, lastName, email, userName, password, balance,profit) VALUES(?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Customers(id, firstName, lastName, username, password, balance, email,profit) VALUES(?,?,?,?,?,?,?,?)";
         //String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
@@ -34,10 +35,13 @@ public class SQL {
             pstmt.setInt(1, id);
             pstmt.setString(2, firstName);
             pstmt.setString(3, lastName);
-            pstmt.setString(4, email);
-            pstmt.setString(5, username);
-            pstmt.setString(6, password);
-            pstmt.setInt(7, balance);
+            pstmt.setString(4, username);
+            pstmt.setString(5, password);
+            pstmt.setInt(6, balance);
+            pstmt.setString(7, email);
+
+
+
             pstmt.setInt(8, profit);
             pstmt.executeUpdate();
         }
@@ -48,8 +52,7 @@ public class SQL {
 
     // Updates a password in the database based on unique username. Can be either manager or customer
     public void updatePassword(String username, String password){
-//        String sql = "UPDATE Customers SET userName = ? WHERE email = ?";
-        String sql = "UPDATE Customers SET password = ? WHERE userName = ?";            // Update the customer's password
+        String sql = "UPDATE Customers SET password = ? WHERE username = ?";            // Update the customer's password
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -61,7 +64,7 @@ public class SQL {
             System.out.println(e.getMessage());
         }
 
-        sql = "UPDATE Managers SET password = ? WHERE userName = ?";                    // Update the manager's password
+        sql = "UPDATE Managers SET password = ? WHERE username = ?";                    // Update the manager's password
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -79,7 +82,7 @@ public class SQL {
 
     // Updates balance for a customer
     public void updateBalance(String username, int balance){
-        String sql = "UPDATE Customers SET balance = ? WHERE userName = ?";
+        String sql = "UPDATE Customers SET balance = ? WHERE username = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -88,6 +91,45 @@ public class SQL {
             pstmt.executeUpdate();
         }
         catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void updateStockPrice(String stockName,  double price){
+        String sql = "UPDATE Stocks SET price = ? WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, price);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void setStockUnavailable(String stockName){
+        String sql = "UPDATE Stocks SET available = ? WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, 0);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void setStockAvailable(String stockName) {
+        String sql = "UPDATE Stocks SET available = ? WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, 1);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -112,7 +154,7 @@ public class SQL {
     // Checks if a customer exists in the database as either approved or pending, or manager
     public boolean customerExists(String username) {
 //        String sql = "SELECT * FROM Customers WHERE email = ?";
-        String sql = "SELECT * FROM Customers WHERE userName = ?";
+        String sql = "SELECT * FROM Customers WHERE password = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -140,7 +182,7 @@ public class SQL {
 //            System.out.println(e.getMessage());
 //        }
 
-        sql = "SELECT * FROM Managers WHERE userName = ?";
+        sql = "SELECT * FROM Managers WHERE username = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -160,7 +202,10 @@ public class SQL {
     // Checks to see if username and password are right
     public boolean verifyCustomerAccount(String username, String password){
 //        String sql = "SELECT * FROM Customers WHERE email = ? AND userName = ?";
-        String sql = "SELECT * FROM Customers WHERE userName = ? AND password = ?";
+        String sql = "SELECT * FROM Customers WHERE username = ? AND password = ?";
+//        String sql = "SELECT * FROM Customers WHERE password = ? AND balance = ?";
+
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -181,7 +226,7 @@ public class SQL {
     // Gets the password based on if username and email are correct
     public String recoverPassword(String username, String email){
 //        String sql = "SELECT * FROM Customers WHERE email = ? AND balance = ?";
-        String sql = "SELECT * FROM Customers WHERE userName = ? AND email = ?";
+        String sql = "SELECT * FROM Customers WHERE username = ? AND email = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -202,7 +247,7 @@ public class SQL {
     // Returns a user based on unique username
     public User getUser(String username){
 //            String sql = "SELECT * FROM Customers WHERE email = ?";
-        String sql = "SELECT * FROM Customers WHERE userName = ?";
+        String sql = "SELECT * FROM Customers WHERE username = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -234,6 +279,38 @@ public class SQL {
             System.out.println(e.getMessage());
         }
         return customers;
+    }
+    public ArrayList<Stock> getAllStocks(){
+        ArrayList<Stock> stocks = new ArrayList<>();
+        String sql = "SELECT * FROM Stocks";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+                stocks.add(new Stock(rs.getString("Name"), rs.getString("Symbol"), rs.getInt("Price")));
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return stocks;
+    }
+    public ArrayList<Stock> getAllAvailableStocks(){
+        ArrayList<Stock> stocks = new ArrayList<>();
+        String sql = "SELECT * FROM Stocks WHERE available = 1";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+                stocks.add(new Stock(rs.getString("Name"), rs.getString("Symbol"), rs.getInt("Price")));
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return stocks;
     }
 
     // Inserts a pending user into the database
@@ -307,7 +384,7 @@ public class SQL {
     }
     // Inserts a manager into the database
     public void insertManager(int id, String firstName, String lastName, String username, String password, String email, int minToBeSuper) {
-        String sql = "INSERT INTO Managers(id, firstName, lastName, userName, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Managers(id, email, lastName, username, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -329,7 +406,7 @@ public class SQL {
 
     // Checks to see if manager login is right
     public boolean verifyManagerAccount(String username, String password) {
-        String sql = "SELECT * FROM Managers WHERE userName = ? AND password = ?";
+        String sql = "SELECT * FROM Managers WHERE username = ? AND password = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -350,7 +427,7 @@ public class SQL {
 
     // Returns a manager based on unique username
     public Manager getManager(String username){
-            String sql = "SELECT * FROM Managers WHERE userName = ?";
+            String sql = "SELECT * FROM Managers WHERE username = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -368,14 +445,15 @@ public class SQL {
     }
 
     // Inserts a stock into db
-    public void insertStock(int id, String name, int price) {
-        String sql = "INSERT INTO Stocks(id, name, price) VALUES(?,?,?)";
+    public void insertStock(int id, String Name, double Price, String Symbol) {
+        String sql = "INSERT INTO Stocks(id, Name, Price, Symbol) VALUES(?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.setString(2, name);
-            pstmt.setInt(3, price);
+            pstmt.setString(2, Name);
+            pstmt.setDouble(3, Price);
+            pstmt.setString(4, Symbol);
             pstmt.executeUpdate();
         }
         catch (SQLException | ClassNotFoundException e) {
@@ -512,7 +590,7 @@ public class SQL {
 
     // Updates profit for a customer
     public void updateProfit(String username, int profit) {
-        String sql = "UPDATE Customers SET profit = ? WHERE userName = ?";
+        String sql = "UPDATE Customers SET profit = ? WHERE password = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, profit);
