@@ -98,9 +98,10 @@
             selectedStock = null;
             return;
         }
-        for (int i = 0; i < Market.getStocks().size(); i++){
-            if (Market.getStocks().get(i).getSymbol().equals(symbol)){
-                selectedStock = Market.getStocks().get(i);
+        SQL sql = new SQL();
+        for (int i = 0; i < sql.getAllStocks().size(); i++){
+            if (sql.getAllStocks().get(i).getSymbol().equals(symbol)){
+                selectedStock = sql.getAllStocks().get(i);
                 l_currentVal.setText("Current Value: " + selectedStock.getCurrentPrice());
                 user.getPortfolio().forEach((k, v) -> {
                     if (v.get(0).getSymbol().equals(symbol)){

@@ -13,8 +13,11 @@ import java.util.ArrayList;
     private String name;
     private String symbol;
     private Value price;                // Tracks current and past prices of stocks
+
+
     private double purchasePrice;
     private boolean owned;
+    private SQL sql;
     
     // Default Constructor
     public Stock(){
@@ -32,6 +35,28 @@ import java.util.ArrayList;
         this.price = price;
         this.owned = false;
     }
+
+     public Stock(String name, String symbol, double currentPrice){
+         this.name = name;
+         this.symbol = symbol;
+         this.price = new Value();
+         setPrice(currentPrice);
+         this.owned = false;
+     }
+
+     public Stock(String symbol){
+        sql = new SQL();
+        this.name = sql.getStockName(symbol);
+        this.symbol = symbol;
+        this.price = new Value(symbol);
+        this.owned = false;
+
+     }
+
+     public Stock(String symbol, double purchasePrice){
+        this(symbol);
+        this.purchasePrice = purchasePrice;
+     }
 
     // Accessor methods
     public String getName(){
@@ -92,8 +117,9 @@ import java.util.ArrayList;
         }
     }
 
+
     public void setPrice(double newPrice){
-        this.getHistory().add(this.getCurrentPrice());
+//        this.getHistory().add(this.getCurrentPrice());
         price.setCurrent(newPrice);
     }
 

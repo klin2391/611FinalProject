@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Window_Forgot extends JPanel implements ActionListener{
-//    private JFrame f;                           // Frame
+    //    private JFrame f;                           // Frame
     private JLabel l_welcome;
     private JTextField tf_username;
     private JTextField tf_email;
@@ -56,6 +56,7 @@ public class Window_Forgot extends JPanel implements ActionListener{
             email = tf_email.getText();
             // VERIFY ACCOUNT
             if(sql.customerExists(username)){
+                System.out.println("Username exist");
                 String pass = sql.recoverPassword(username, email);
                 new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
 //                f.dispose();
@@ -65,8 +66,10 @@ public class Window_Forgot extends JPanel implements ActionListener{
             }
         }
         else if(e.getSource() == b_cancel){
+            // Remove this window and go back to login
+//            this.setVisible(false);
 //            f.dispose();
-            new Window_Login();
+//            new Window_Login(m);
         }
     }
 }
