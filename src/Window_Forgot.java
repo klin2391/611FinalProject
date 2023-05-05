@@ -66,8 +66,10 @@ public class Window_Forgot extends JPanel implements ActionListener{
             }
         }
         else if(e.getSource() == b_cancel){
+            // Remove this window and go back to login
+//            this.setVisible(false);
 //            f.dispose();
-            new Window_Login();
+//            new Window_Login(m);
         }
     }
 }

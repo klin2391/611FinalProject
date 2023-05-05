@@ -83,6 +83,8 @@ public class Window_Trade implements ActionListener, Observer_User{
             if (cb_allStocks.getSelectedItem() != "Select a Stock"){
                 String symbol = (String)cb_allStocks.getSelectedItem();
                 for (int i = 0; i < worldStocks.size(); i++){
+                    System.out.println(worldStocks.get(i).getSymbol());
+                    System.out.println(worldStocks.get(i).getHistory());
                     if (worldStocks.get(i).getSymbol().equals(symbol)){
                         Window_Stock wsi = new Window_Stock(new ArrayList<Stock>(Arrays.asList(worldStocks.get(i))), false);        // false means it's not owned
                     }

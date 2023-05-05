@@ -99,7 +99,9 @@ public class Window_ManagerUsers implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
         if (e.getSource() == b_view) {                  // View user
-            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1);
+//            User user = sql.getUser(m.getApprovedUsers().get(cb_users.getSelectedIndex()).getUsername());
+//            new Window_User(user,1, m);
+            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1, m);
         }
         else if (e.getSource() == b_block) {            // Block user
             User u = sql.getUser((String)cb_users.getSelectedItem());

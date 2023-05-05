@@ -12,12 +12,15 @@
 
 import java.util.*;
 import java.util.Random;
-public class Manager extends Person{
+public class Manager extends Person implements Observer_User{
     private ArrayList<User> pendingApproval;
     private ArrayList<User> approvedUsers;
     private ArrayList<Stock> stocks;
     private ArrayList<Stock> availableStocks;
     private SQL sql;
+    private ArrayList<Observer_Stock> observers;
+
+    private ArrayList<Observer_Manager> observer_windows;
 
     public Manager(){
         username = "admin";
@@ -26,6 +29,8 @@ public class Manager extends Person{
         pendingApproval = new ArrayList<User>();
         approvedUsers = new ArrayList<User>();
         sql = new SQL();
+        observers = new ArrayList<Observer_Stock>();
+        observer_windows = new ArrayList<Observer_Manager>();
     }
 
     //Constructor with parameters
@@ -38,6 +43,8 @@ public class Manager extends Person{
         pendingApproval = sql.getAllPendingCustomers();
         stocks = sql.getAllStocks();
         availableStocks = sql.getAllAvailableStocks();
+        observers = new ArrayList<Observer_Stock>();
+        observer_windows = new ArrayList<Observer_Manager>();
     }
 
     public ArrayList<User> getPendingApproval(){
@@ -105,7 +112,7 @@ public class Manager extends Person{
         Random rand = new Random();
 
         double flunctuation = new Double(Math.round(rand.nextDouble() * maxFlunctuation * 100))/100;
-
+        System.out.println(stock.getName()+flunctuation);
         int flip = rand.nextInt() % 2; //flip 0 decrease; flip 1increase
 
         if(flip==0){
@@ -116,17 +123,20 @@ public class Manager extends Person{
         }
         stock.setPrice(price);
         sql.updateStockPrice(stock.getName(), price);
+        updateObs();
     }
 
     public void randomUpdateAll(){ //update value of all stock randomly
         for (Stock s : availableStocks){
             randomUpdateStock(s);
         }
+        updateObs();
     }
 
     //update value of one stock manually
     public void updateStock(String stockName, double price){
         sql.updateStockPrice(stockName, price);
+        updateObs();
     }
 
     public String[][] trackProfit(){ //track profit of all users
@@ -155,4 +165,42 @@ public class Manager extends Person{
 //        }
 //        return goodUser;
 //    }
+
+    public void addObs(Observer_Stock obs) {
+        observers.add(obs);
+    }
+
+    public void registerWindow(Observer_Manager obs){
+        observer_windows.add(obs);
+    }
+
+    public void updateWindow(){
+        for (Observer_Manager obs : observer_windows){
+            obs.update(this);
+        }
+    }
+    public ArrayList<Observer_Stock> getObs(){
+        return observers;
+    }
+    public void updateObs(){
+        for (Observer_Stock obs : observers){
+            obs.update();
+        }
+    }
+
+    public void register(User u){
+        u.addWindow(this);
+    }
+
+    public void update(User u){
+        System.out.println("Manager: " + u.getUsername() + " has been updated");
+        System.out.println(approvedUsers.size());
+        for (int i = 0; i < approvedUsers.size(); i++){
+            if (approvedUsers.get(i).getUsername().equals(u.getUsername())){
+                approvedUsers.remove(i);
+                approvedUsers.add(i, u);
+            }
+        }
+        updateWindow();
+    }
 }

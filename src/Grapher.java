@@ -26,7 +26,7 @@ public class Grapher extends JPanel{
     private boolean gain;
 
     // Constructor
-    public Grapher(ArrayList <Double> yCoords, Double profit) {
+    public Grapher(ArrayList <Double> yCoords, Double profit, boolean owned) {
         this.yCoords = yCoords;
         max = yCoords.stream().max(Double::compareTo).get();        // We find the max value in the arraylist
         int maxInt = (int) (max / 10);
@@ -39,7 +39,12 @@ public class Grapher extends JPanel{
         unitY = (int) ((endY - startY) / max);
         prevX = startX;
         prevY = (int) (endY - (yCoords.get(0) * unitY));
-        gain = profit > 0;
+        if (owned){
+            gain = profit >= 0;
+        }
+        else{
+            gain = yCoords.get(yCoords.size()-1) > yCoords.get(yCoords.size()-2);
+        }
     }
 
     @Override
@@ -61,8 +66,7 @@ public class Grapher extends JPanel{
         g2d.drawLine(startX, startY, startX, endY);         // We draw the axes here
         g2d.drawLine(startX, endY, endX, endY);
         
-        g2d.drawString("10", endX, endY);               // We draw the labels here
-        g2d.drawString("0", startX, endY);
+        g2d.drawString("present", endX, endY);               // We draw the labels here
         g2d.drawString(""+max, startX, startY);
 
         

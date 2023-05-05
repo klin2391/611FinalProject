@@ -29,6 +29,7 @@ public class Window_Root extends JFrame implements ActionListener  {
     private JPanel p_north;
     private JPanel p_center;
     private JPanel p_south;
+    private Manager m;
 
 
     // Constructor
@@ -45,17 +46,17 @@ public class Window_Root extends JFrame implements ActionListener  {
 
 
 
-        background = new JLabel();
-        URL resource = this.getClass().getResource("/background2.jpg");
-        ImageIcon icon = new ImageIcon(resource);
-        background.setIcon(icon);
-        background.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
-        System.out.println(icon.getIconWidth());
-        System.out.println(icon.getIconHeight());
-        f.getContentPane().add(background);
-        l_welcome.setBounds(50, 50, 200, 30);
-        b_createAccount.setBounds(50, 100, 200, 30);
-        b_login.setBounds(50, 150, 200, 30);
+//        background = new JLabel();
+//        URL resource = this.getClass().getResource("/background2.jpg");
+//        ImageIcon icon = new ImageIcon(resource);
+//        background.setIcon(icon);
+//        background.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
+//        System.out.println(icon.getIconWidth());
+//        System.out.println(icon.getIconHeight());
+//        f.getContentPane().add(background);
+//        l_welcome.setBounds(50, 50, 200, 30);
+//        b_createAccount.setBounds(50, 100, 200, 30);
+//        b_login.setBounds(50, 150, 200, 30);
 
 
         b_createAccount.addActionListener(this);
@@ -77,15 +78,24 @@ public class Window_Root extends JFrame implements ActionListener  {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
+
+
+        SQL sql = new SQL();
+        m = sql.getManager("admin");
+
     }
 
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_createAccount){
             new Window_Apply();
-            f.dispose();
+//            f.dispose();
         }
         else if (e.getSource() == b_login){
-            new Window_Login();
+
+            //new Window_Login();
+
+            new Window_Login(m);
+
 //            f.dispose();
         }
     }

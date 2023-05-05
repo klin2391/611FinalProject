@@ -26,6 +26,13 @@ public class Value {
         this.history.add(this.current);
     }
 
+    public Value(String symbol){
+        SQL sql = new SQL();
+        this.current = sql.getStockPrice(symbol);
+        this.history = sql.getStockHistory(symbol);
+        this.history.add(this.current);
+    }
+
     // Accessor methods
     public double getCurrent(){
         return current;
@@ -37,8 +44,8 @@ public class Value {
 
     // Mutator methods
     public void setCurrent(double current){
-        this.history.add(this.current);
         this.current = current;
+        this.history.add(this.current);
     }
 
     public void setHistory(ArrayList <Double> history){

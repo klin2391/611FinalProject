@@ -23,9 +23,10 @@ public class Window_Login extends JPanel implements ActionListener {
     private User user;
     private SQL sql;
     private JPanel p;
+    private Manager m;
 
     // Constructor
-    public Window_Login(){
+    public Window_Login(Manager m){
         f = new JFrame("Login");
         p = new JPanel();
         l_welcome = new JLabel("Welcome Back!");
@@ -44,6 +45,7 @@ public class Window_Login extends JPanel implements ActionListener {
         b_forgot.addActionListener(this);
         b_back.setBounds(50, 300, 200, 30);
         b_back.addActionListener(this);
+
         p.add(l_welcome);
         p.add(tf_username);
         p.add(pf_password);
@@ -53,15 +55,20 @@ public class Window_Login extends JPanel implements ActionListener {
         p.setSize(500, 500);
         p.setLayout(null);
         p.setVisible(true);
+
         f.add(p);
         f.setSize(500, 500);
         f.setLayout(null);
         f.setVisible(true);
         sql = new SQL();
+        this.m = m;
+//        m = sql.getManager("admin");
     }
 
     // Action Listener
     public void actionPerformed(ActionEvent e){
+        System.out.println("WINDOW LOGGIN" + m.getObs().size());
+
         // if the login button is pressed
         if(e.getSource() == b_login){
             // get the username and password
@@ -69,20 +76,26 @@ public class Window_Login extends JPanel implements ActionListener {
             password = pf_password.getText();
             // VERIFY ACCOUNT
             SQL sql = new SQL();
+            System.out.println("WINDOW LOGGIN" +m.getObs().size());
             // query the database and check if the username and password match and exist in the database
             if(sql.verifyCustomerAccount(username, password)){
                 user = sql.getUser(username);
+                user.register(m);
+                m.register(user);
+                System.out.println("WINDOW LOGGIN" + m.getObs().size());
+                // REGISTER USER
                 if (sql.isSuperAccount(username)){          // IF SUPER ACCOUNT
-                    new Window_Super(user);
+                    new Window_Super(user, m);
+                    //REGISTER WINDOW
                     f.dispose();
                 }
                 else{                                       // IF NORMAL ACCOUNT
-                    new Window_User(user, 0);
+                    new Window_User(user, 0, m);
+                    //REGISTER WINDOW
                     f.dispose();
                 }
             }
             else if (sql.verifyManagerAccount(username, password)){     // IF manager
-                Manager m = sql.getManager(username);
                 new Window_Manager(m);
                 f.dispose();
             }
@@ -100,6 +113,7 @@ public class Window_Login extends JPanel implements ActionListener {
             new Window_Root();
             f.dispose();
         }
+        System.out.println("WINDOW end" + m.getObs().size());
     }
 
 }

@@ -41,8 +41,11 @@ public class Window_Stock implements ActionListener{
         l_numberOfShares = new JLabel("Number of Shares: " + stocks.size());
         l_totalValue = new JLabel("Total Value: " + stocks.get(0).getCurrentPrice()*stocks.size());
         l_totalCost = new JLabel("Total Cost: " + totalCost);
-        
-        p_graph = new Grapher(stocks.get(0).getHistory(), profit);
+        System.out.println(stocks.get(0).getHistory());
+        System.out.println("DBG LOOK AT ME");
+        System.out.println(stocks.get(0).getName());
+//        Collections.reverse(stocks.get(0).getHistory());
+        p_graph = new Grapher(stocks.get(0).getHistory(), profit, isOwned);
         cb_stocksOwned = new JComboBox <String>();
         cb_stocksOwned.addItem("Select a Stock");       // Add the option to select a stock
         for (int i = 0; i < stocks.size(); i++){            // Adds each stock
@@ -52,7 +55,7 @@ public class Window_Stock implements ActionListener{
         l_name.setBounds(50, 50, 200, 30);
         l_currentPrice.setBounds(50, 100, 200, 30);
         l_totalCost.setBounds(50, 150, 200, 30);
-        p_graph.setBounds(50, 500, 500, 30);
+        p_graph.setBounds(50, 300, 500, 30);
         l_profit.setBounds(50, 550, 200, 30);
         l_numberOfShares.setBounds(50, 600, 200, 30);
         l_totalValue.setBounds(50, 650, 200, 30);
@@ -72,9 +75,10 @@ public class Window_Stock implements ActionListener{
         }
 
         f.add(p_info, BorderLayout.NORTH);
-        f.add(p_graph, BorderLayout.SOUTH);
+        f.add(p_graph, BorderLayout.CENTER);
         
-        f.setSize(1000, 1000);
+        f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        f.setUndecorated(true);
         
         f.setVisible(true);
     }
