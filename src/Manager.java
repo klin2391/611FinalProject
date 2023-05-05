@@ -119,7 +119,7 @@ public class Manager extends Person{
     }
 
     public void randomUpdateAll(){ //update value of all stock randomly
-        for (Stock s : stocks){
+        for (Stock s : availableStocks){
             randomUpdateStock(s);
         }
     }

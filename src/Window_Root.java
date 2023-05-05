@@ -6,6 +6,9 @@
  * This class is the home page of the program.
  * It allows the user to login or create an account.
  */
+import java.net.URL;
+import javax.swing.ImageIcon;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +23,7 @@ public class Window_Root extends JFrame implements ActionListener  {
     private JPanel p;
     private User user;                          // User profile
     private JLabel l_welcome;
+    private JLabel background;
     private JButton b_createAccount;
     private JButton b_login;
     private JPanel p_north;
@@ -39,9 +43,20 @@ public class Window_Root extends JFrame implements ActionListener  {
         p_south = new JPanel();
         p.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+
+
+        background = new JLabel();
+        URL resource = this.getClass().getResource("/background2.jpg");
+        ImageIcon icon = new ImageIcon(resource);
+        background.setIcon(icon);
+        background.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
+        System.out.println(icon.getIconWidth());
+        System.out.println(icon.getIconHeight());
+        f.getContentPane().add(background);
         l_welcome.setBounds(50, 50, 200, 30);
         b_createAccount.setBounds(50, 100, 200, 30);
         b_login.setBounds(50, 150, 200, 30);
+
 
         b_createAccount.addActionListener(this);
         b_login.addActionListener(this);
@@ -54,11 +69,14 @@ public class Window_Root extends JFrame implements ActionListener  {
         p.add(p_north, BorderLayout.NORTH);
         p.add(p_center, BorderLayout.CENTER);
         p.add(p_south, BorderLayout.SOUTH);
+
 //        f.setLayout(new BorderLayout());
         f.add(p);
-        f.setSize(500, 500);
+        f.setSize(500, 500); //476
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
     }
 
     public void actionPerformed(ActionEvent e){
@@ -68,7 +86,7 @@ public class Window_Root extends JFrame implements ActionListener  {
         }
         else if (e.getSource() == b_login){
             new Window_Login();
-            f.dispose();
+//            f.dispose();
         }
     }
 }
