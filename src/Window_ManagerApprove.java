@@ -22,9 +22,9 @@ public class Window_ManagerApprove implements ActionListener{
     private SQL sql;
 
     // Constructor
-    public Window_ManagerApprove(Manager m){
+    public Window_ManagerApprove(){
         f = new JFrame("Approve Users");
-        this.m = m;
+        this.m = Manager.getInstance();
         cb_users = new JComboBox<String>();
         for (int i = 0; i < m.getPendingApproval().size(); i++){
             cb_users.addItem(m.getPendingApproval().get(i).getUsername());

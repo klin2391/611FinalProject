@@ -13,7 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 
 
-public class Window_Stock implements ActionListener{
+public class Window_Stock{
     private JFrame f;
     private ArrayList <Stock> stocks;
     private JLabel l_name;
@@ -22,7 +22,6 @@ public class Window_Stock implements ActionListener{
     private JLabel l_numberOfShares;
     private JLabel l_totalValue;
     private JLabel l_totalCost;
-    private JComboBox <String> cb_stocksOwned;
     private JPanel p_graph;
     private JPanel p_info;
     
@@ -41,16 +40,7 @@ public class Window_Stock implements ActionListener{
         l_numberOfShares = new JLabel("Number of Shares: " + stocks.size());
         l_totalValue = new JLabel("Total Value: " + stocks.get(0).getCurrentPrice()*stocks.size());
         l_totalCost = new JLabel("Total Cost: " + totalCost);
-        System.out.println(stocks.get(0).getHistory());
-        System.out.println("DBG LOOK AT ME");
-        System.out.println(stocks.get(0).getName());
-//        Collections.reverse(stocks.get(0).getHistory());
         p_graph = new Grapher(stocks.get(0).getHistory(), profit, isOwned);
-        cb_stocksOwned = new JComboBox <String>();
-        cb_stocksOwned.addItem("Select a Stock");       // Add the option to select a stock
-        for (int i = 0; i < stocks.size(); i++){            // Adds each stock
-            cb_stocksOwned.addItem("" + (i+1));
-        }
 
         l_name.setBounds(50, 50, 200, 30);
         l_currentPrice.setBounds(50, 100, 200, 30);
@@ -59,12 +49,8 @@ public class Window_Stock implements ActionListener{
         l_profit.setBounds(50, 550, 200, 30);
         l_numberOfShares.setBounds(50, 600, 200, 30);
         l_totalValue.setBounds(50, 650, 200, 30);
-        cb_stocksOwned.setBounds(50, 700, 200, 30);
 
-        cb_stocksOwned.addActionListener(this);
-        f.setLayout(new BorderLayout());
         p_info = new JPanel();
-
         p_info.add(l_name);
         p_info.add(l_currentPrice);
 
@@ -74,21 +60,11 @@ public class Window_Stock implements ActionListener{
             p_info.add(l_totalCost);
         }
 
+        f.setLayout(new BorderLayout());
         f.add(p_info, BorderLayout.NORTH);
         f.add(p_graph, BorderLayout.CENTER);
-        
         f.setExtendedState(JFrame.MAXIMIZED_BOTH);
         f.setUndecorated(true);
-        
         f.setVisible(true);
-    }
-
-    // Action Listener for the JComboBox
-    public void actionPerformed(ActionEvent e){
-        JComboBox cb = (JComboBox)e.getSource();
-        String symbol = (String)cb.getSelectedItem();
-        if (symbol.equals("Select a Stock"))
-            return;
-        Window_Stock_Single wss = new Window_Stock_Single(stocks.get(Integer.parseInt(symbol)-1));
     }
 }

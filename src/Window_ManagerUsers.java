@@ -28,9 +28,9 @@ public class Window_ManagerUsers implements ActionListener{
     private JComboBox <String> cb_eligible;
     private SQL sql;
 
-    public Window_ManagerUsers(Manager m){
+    public Window_ManagerUsers(){
         f = new JFrame("Manager");
-        this.m = m;
+        this.m = Manager.getInstance();
         l_welcome = new JLabel("Welcome, " + m.getUsername() + "!");
         cb_users = new JComboBox<String>();
         b_view = new JButton("View");
@@ -99,9 +99,7 @@ public class Window_ManagerUsers implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
         if (e.getSource() == b_view) {                  // View user
-//            User user = sql.getUser(m.getApprovedUsers().get(cb_users.getSelectedIndex()).getUsername());
-//            new Window_User(user,1, m);
-            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1, m);
+            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1);
         }
         else if (e.getSource() == b_block) {            // Block user
             User u = sql.getUser((String)cb_users.getSelectedItem());
@@ -149,6 +147,6 @@ public class Window_ManagerUsers implements ActionListener{
 
     public void update_frame(){
         f.dispose();
-        new Window_ManagerUsers(m);
+        new Window_ManagerUsers();
     }
 }

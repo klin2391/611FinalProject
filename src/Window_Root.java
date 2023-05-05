@@ -29,7 +29,7 @@ public class Window_Root extends JFrame implements ActionListener  {
     private JPanel p_north;
     private JPanel p_center;
     private JPanel p_south;
-    private Manager m;
+//    private Manager m;
 
 
     // Constructor
@@ -77,24 +77,23 @@ public class Window_Root extends JFrame implements ActionListener  {
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
-
-
         SQL sql = new SQL();
-        m = sql.getManager("admin");
+//        m = sql.getManager("admin");
 
     }
 
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_createAccount){
-            new Window_Apply();
+            Window w = new Window("Stock Market", 800, 600);
+            Window_Apply wa = new Window_Apply(w);
+            w.update(wa);
 //            f.dispose();
         }
         else if (e.getSource() == b_login){
 
             //new Window_Login();
 
-            new Window_Login(m);
+            new Window_Login();
 
 //            f.dispose();
         }

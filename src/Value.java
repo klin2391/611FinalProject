@@ -4,7 +4,6 @@
  * 17APR2023
  * 
  * This class is a tentative draft at creating a value for stocks
- * Required work invovles reading from a database
  */
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class Value {
     // Mutator methods
     public void setCurrent(double current){
         this.current = current;
-        this.history.add(this.current);
+        this.history.add(this.current);             // Add current value to history
     }
 
     public void setHistory(ArrayList <Double> history){

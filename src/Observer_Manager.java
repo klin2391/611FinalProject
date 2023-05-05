@@ -1,10 +1,10 @@
 /*
- * Observer_User.java
+ * Observer_Manager.java
  * by Kevin Lin (lin2391@bu.edu)
- * 20APR2023
+ * 05MAY2023
  *
  * This interface is used to update listeners
- * when the user is updated
+ * when the manager is updated. Used for manager windows
  */
 
 public interface Observer_Manager {

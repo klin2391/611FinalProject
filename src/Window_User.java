@@ -16,7 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 
-public class Window_User implements ActionListener, Observer_User, Observer_Stock{
+public class Window_User implements ActionListener, Observer_User{
     private JFrame f;                           // Frame
     private User user;                          // User profile
     private JLabel l_nameFirst;
@@ -35,9 +35,9 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
 
 
     // Constructor that takes a user
-    public Window_User(User u, int caller, Manager m){         // Caller is 0 if called from login, 1 if called from manager
+    public Window_User(User u, int caller){         // Caller is 0 if called from login, 1 if called from manager
         this.user = u;                                      // Sets user
-        register(user, m);
+        register(user);
         f = new JFrame(u.getUsername());
         l_nameFirst = new JLabel("First Name: " + u.getFirstName());
         l_nameLast = new JLabel("Last Name: " + u.getLastName());
@@ -53,12 +53,12 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
         else if (caller == 1){                              // If called from settings
             b_logout = new JButton("Cancel");
         }
-
         cb_stocksOwned = new JComboBox <String>();
         cb_stocksOwned.addItem("Select a Stock to View");
         for (String s : u.getPortfolio().keySet()){         //Adds owned stocks to list
             cb_stocksOwned.addItem(s);
         }
+
         cb_stocksOwned.addActionListener(this);
         b_depositWithdraw.addActionListener(this);
         b_buySell.addActionListener(this);
@@ -105,7 +105,6 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
 
     // Implements action performed interface for user interaction
     public void actionPerformed(ActionEvent e){
-
         SQL sql = new SQL();
         if (e.getSource() == b_depositWithdraw){     // If button to deposit is clicked
             if (sql.checkIfUserBlacklisted(user.getUsername())){
@@ -124,18 +123,7 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
                 JOptionPane.showMessageDialog(null, "There are no stocks in the system. Please contact an administrator.");
                 return;
             }
-            //Window_Trade wt = new Window_Trade(user.getPortfolio(), Market.getStocks(), user);
-            System.out.println("DBG");
-            ArrayList <String> test = sql.getUserStockSymbols(user);
-
-            for (String s : test){
-                System.out.println(s);
-            }
-            System.out.println("DBG End");
-            System.out.println(sql.getAllStocks().get(0).getSymbol());
-            System.out.println(sql.getAllStocks().get(0).getHistory());
-            Window_Trade wbs = new Window_Trade(user.getPortfolio(), sql.getAllStocks(), user);
-
+            Window_Trade wbs = new Window_Trade(user.getPortfolio(), sql.getAllAvailableStocks(), user);
             return;
         }
         else if (e.getSource() == b_settings){           // If button to settings is clicked
@@ -152,22 +140,18 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
         String symbol = (String)cb.getSelectedItem();
         if (symbol.equals("Select a Stock to View"))                            // Do nothing
             return;
-        System.out.println(user.getStock(symbol).get(0).getHistory());
         Window_Stock ws = new Window_Stock(user.getStock(symbol),true);
     }
 
     // Update values on frame based on new user
     public void update(User u){
         user = u;
-        System.out.println("DBG FROM UPDATE WINDOWS USER");
-//        System.out.println(user.getStock("APL").get(0).getHistory());
         l_nameFirst.setText("First Name: " + u.getFirstName());
         l_nameLast.setText("Last Name: " + u.getLastName());
         l_cashBuyPower.setText("Cash Buying Power: " + u.getBalance());
         l_accountValue.setText("Account Value: " + u.getTotalValue());
         l_profit.setText("Profit: " + u.getProfit());
         if (u.getPortfolio().size() > cb_stocksOwned.getItemCount() - 1){       // If new stock is added
-//            cb_stocksOwned.addItem((String) u.getPortfolio().keySet().toArray()[u.getPortfolio().size() - 1]);
             cb_stocksOwned.addItem((String) u.getPortfolio().keySet().toArray()[0]);
         }
         if (u.getPortfolio().size() < cb_stocksOwned.getItemCount() - 1){       // If stock is removed
@@ -176,7 +160,6 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
                     if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
                         cb_stocksOwned.removeItemAt(i);
                     }
-                        
                 }
             }
             else {
@@ -189,22 +172,8 @@ public class Window_User implements ActionListener, Observer_User, Observer_Stoc
                 }
             }
         }
-
-    }
-
-    public void register(User u, Manager m){
-        register(u);
-//        register(m);
     }
     public void register(User u){
         u.addWindow(this);
-    }
-
-    public void register(Manager m) {
-        m.addObs(this);
-    }
-
-    public void update() {
-        // Do the actual updating of the user stocks
     }
 }

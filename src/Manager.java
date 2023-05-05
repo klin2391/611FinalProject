@@ -5,7 +5,10 @@
  *
  * This class is used to represent a manager. Will have approved users and
  * pending users. Should have the ability to approve/deny users.
- * View users, and change stocks
+ * View users, and change stocks.
+ *
+ * Manager is listener on User
+ * If stocks change, manager updates listeners
  *
  * TODO: Singleton
  */
@@ -13,14 +16,23 @@
 import java.util.*;
 import java.util.Random;
 public class Manager extends Person implements Observer_User{
-    private ArrayList<User> pendingApproval;
-    private ArrayList<User> approvedUsers;
+    private ArrayList<User> pendingApproval;                // Users that are pending approval
+    private ArrayList<User> approvedUsers;                  // Users that have been approved
     private ArrayList<Stock> stocks;
     private ArrayList<Stock> availableStocks;
     private SQL sql;
-    private ArrayList<Observer_Stock> observers;
+    private ArrayList<Observer_Stock> observers;                // List of observers that are watching stocks
 
-    private ArrayList<Observer_Manager> observer_windows;
+    private ArrayList<Observer_Manager> observer_windows;       // List of observers that are watching manager
+
+    private static Manager instance = null;
+    public static Manager getInstance(){
+        if(instance == null){
+            SQL sql = new SQL();
+            instance = sql.getManager("admin");
+        }
+        return instance;
+    }
 
     public Manager(){
         username = "admin";
@@ -47,11 +59,12 @@ public class Manager extends Person implements Observer_User{
         observer_windows = new ArrayList<Observer_Manager>();
     }
 
+    //Getters
     public ArrayList<User> getPendingApproval(){
         pendingApproval = sql.getAllPendingCustomers();
         return pendingApproval;
-
     }
+
     public ArrayList<User> getApprovedUsers(){
         return approvedUsers;
     }
@@ -68,13 +81,17 @@ public class Manager extends Person implements Observer_User{
         stocks = sql.getAllStocks();
         return stocks;
     }
+
     public ArrayList<Stock> getAvailableStocks(){
         availableStocks = sql.getAllAvailableStocks();
         return availableStocks;
     }
 
+    public ArrayList<Observer_Stock> getObs(){
+        return observers;
+    }
 
-
+    // ACTIONS
     // Approves a single user
     public void approveUser(User user){
         if (sql.customerExists(user.getUsername())){        // If the user already exists, don't add them
@@ -93,28 +110,13 @@ public class Manager extends Person implements Observer_User{
         new Window_EmailNotification("User " + user.getFirstName() + " has been denied.", user.getEmail());
     }
 
-    public void approveAll(ArrayList <User> users){
-        for (User user : users){
-            approveUser(user);
-        }
-    }
-
-    public void denyAll(ArrayList <User> users){
-        for (User user : users){
-            denyUser(user);
-        }
-    }
-
     //update value of one stock randomly
     public void randomUpdateStock(Stock stock){
         double price = stock.getCurrentPrice();
-        double maxFlunctuation = price * 0.05;
+        double maxFlunctuation = price * 0.1;
         Random rand = new Random();
-
         double flunctuation = new Double(Math.round(rand.nextDouble() * maxFlunctuation * 100))/100;
-        System.out.println(stock.getName()+flunctuation);
         int flip = rand.nextInt() % 2; //flip 0 decrease; flip 1increase
-
         if(flip==0){
             price -= flunctuation;
         }
@@ -126,7 +128,8 @@ public class Manager extends Person implements Observer_User{
         updateObs();
     }
 
-    public void randomUpdateAll(){ //update value of all stock randomly
+    //update value of all stock randomly
+    public void randomUpdateAll(){
         for (Stock s : availableStocks){
             randomUpdateStock(s);
         }
@@ -139,7 +142,17 @@ public class Manager extends Person implements Observer_User{
         updateObs();
     }
 
-    public String[][] trackProfit(){ //track profit of all users
+    public void addStock(String stockName, double price, String symbol){
+        sql.insertStock(sql.getNextID("Stocks"), stockName, price, symbol);
+        updateObs();
+    }
+
+    public void removeStock(String stockName){
+        sql.setStockUnavailable(stockName);
+        updateObs();
+    }
+    //track profit of all users
+    public String[][] trackProfit(){
         String[][] table = new String[approvedUsers.size()][3];
         int idx = 0;
         for(User user : approvedUsers){
@@ -166,35 +179,39 @@ public class Manager extends Person implements Observer_User{
 //        return goodUser;
 //    }
 
+
+    //OBSERVER STUFF
+    //Register for those watching stocks
     public void addObs(Observer_Stock obs) {
         observers.add(obs);
     }
 
+    //Register for those watching manager
     public void registerWindow(Observer_Manager obs){
         observer_windows.add(obs);
     }
 
+    //Update those watching manager
     public void updateWindow(){
         for (Observer_Manager obs : observer_windows){
             obs.update(this);
         }
     }
-    public ArrayList<Observer_Stock> getObs(){
-        return observers;
-    }
+
+    //Update those watching stocks
     public void updateObs(){
         for (Observer_Stock obs : observers){
             obs.update();
         }
     }
 
+    // Register manager to user
     public void register(User u){
         u.addWindow(this);
     }
 
+    // Update manager
     public void update(User u){
-        System.out.println("Manager: " + u.getUsername() + " has been updated");
-        System.out.println(approvedUsers.size());
         for (int i = 0; i < approvedUsers.size(); i++){
             if (approvedUsers.get(i).getUsername().equals(u.getUsername())){
                 approvedUsers.remove(i);

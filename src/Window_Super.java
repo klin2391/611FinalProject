@@ -19,7 +19,7 @@ public class Window_Super implements ActionListener{
     private Manager m;
 
     // Constructor
-    public Window_Super(User user, Manager m){
+    public Window_Super(User user){
         this.user = user;
         this.m = m;
         f = new JFrame("Super User" + user.getUsername());
@@ -50,7 +50,7 @@ public class Window_Super implements ActionListener{
     // Action Listener
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == b_stocks){
-            new Window_User(user, 0, m);
+            new Window_User(user, 0);
             f.dispose();
         }
         else if(e.getSource() == b_options){
@@ -58,7 +58,7 @@ public class Window_Super implements ActionListener{
             f.dispose();
         }
         else if(e.getSource() == b_logout){
-            new Window_Login(m);
+            new Window_Login();
             f.dispose();
         }
     }

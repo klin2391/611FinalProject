@@ -1,28 +1,29 @@
+/*
+ * Window_ManagerRemoveStock.java
+ * by Ryan
+ * 23APR2023
+ *
+ * This is a window to remove a stock from market
+ */
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
-
 
 public class Window_ManagerRemoveStock implements ActionListener {
     private JFrame f;
     private Manager m;
     private JComboBox<String> cb_stocks;
     private JButton b_remove;
-
-
     private JButton b_cancel;
-
     private String selectedStock;
     private SQL sql;
 
     // Constructor
-    public Window_ManagerRemoveStock(Manager m){
+    public Window_ManagerRemoveStock(){
         f = new JFrame("Remove Stock");
-        this.m = m;
+        this.m = Manager.getInstance();
         cb_stocks = new JComboBox<String>();
-
         for (int i = 0; i < m.getAvailableStocks().size(); i++){
             cb_stocks.addItem(m.getAvailableStocks().get(i).getName());
         }
@@ -60,10 +61,10 @@ public class Window_ManagerRemoveStock implements ActionListener {
     // Action Listener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == b_remove) {
-            sql.setStockUnavailable(selectedStock);
+//            sql.setStockUnavailable(selectedStock);
+            m.removeStock(selectedStock);
             JOptionPane.showMessageDialog(f, "Remove "+selectedStock+ " from market successfully!");
             updateComboBox();
-            //f.dispose();
         }
         else if (e.getSource() == b_cancel) {
             f.dispose();
@@ -73,5 +74,4 @@ public class Window_ManagerRemoveStock implements ActionListener {
             selectedStock = (String)cb.getSelectedItem();
         }
     }
-
 }

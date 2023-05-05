@@ -35,8 +35,9 @@
                 cb_stocks.addItem((String) u.getPortfolio().keySet().toArray()[i]);
         }
         else if (a.getName() == "Buy"){
-            for (int i = 0; i < s.size(); i++){
-                cb_stocks.addItem(s.get(i).getSymbol());
+            SQL sql = new SQL();
+            for (int i = 0; i < sql.getAllAvailableStocks().size(); i++){
+                cb_stocks.addItem(sql.getAllAvailableStocks().get(i).getSymbol());
             }
         }
         l_currentVal = new JLabel("Current Value: -" );
