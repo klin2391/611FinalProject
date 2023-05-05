@@ -14,8 +14,8 @@ public class SQL {
     private Connection connect() throws ClassNotFoundException {
         // SQLite connection string
         //String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
-//        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
-        String url = "jdbc:sqlite:C:/Users/kevin/OneDrive/Documents/AY23-2/GRS CS611/stocktrading.db";
+        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
+        //String url = "jdbc:sqlite:C:/Users/kevin/OneDrive/Documents/AY23-2/GRS CS611/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -121,7 +121,7 @@ public class SQL {
     }
 
     public void setStockUnavailable(String stockName){
-        String sql = "UPDATE Stocks SET available = ? WHERE name = ?";
+        String sql = "UPDATE Stocks SET priceCurrent = ? WHERE name = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -134,7 +134,7 @@ public class SQL {
         }
     }
     public void setStockAvailable(String stockName) {
-        String sql = "UPDATE Stocks SET available = ? WHERE name = ?";
+        String sql = "UPDATE Stocks SET priceCurrent = ? WHERE name = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -465,7 +465,7 @@ public class SQL {
 
     // Inserts a stock into db
     public void insertStock(int id, String Name, double Price, String Symbol) {
-        String sql = "INSERT INTO Stocks(id, Name, Symbol, priceCurrent) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO Stocks(id, Name, symbol, priceCurrent) VALUES(?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

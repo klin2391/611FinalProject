@@ -112,7 +112,7 @@ public class Manager extends Person implements Observer_User{
         Random rand = new Random();
 
         double flunctuation = new Double(Math.round(rand.nextDouble() * maxFlunctuation * 100))/100;
-
+        System.out.println(stock.getName()+flunctuation);
         int flip = rand.nextInt() % 2; //flip 0 decrease; flip 1increase
 
         if(flip==0){
@@ -127,7 +127,7 @@ public class Manager extends Person implements Observer_User{
     }
 
     public void randomUpdateAll(){ //update value of all stock randomly
-        for (Stock s : stocks){
+        for (Stock s : availableStocks){
             randomUpdateStock(s);
         }
         updateObs();

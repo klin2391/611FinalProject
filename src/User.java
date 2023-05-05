@@ -9,6 +9,7 @@
  * TODO: Listener for stocks when updated
  */
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -60,10 +61,15 @@ public class User extends Person implements User_Account, Observer_Stock{
         double purchasePrice = 0;
         for (String symbol : portfolio.keySet()) { // calculate the purchase price for all stocks a user has
             for (Stock stock : portfolio.get(symbol)) {
-                purchasePrice += stock.getPurchasePrice();
+                BigDecimal b1 = new BigDecimal(purchasePrice);
+                BigDecimal b2 = new BigDecimal(stock.getPurchasePrice());
+                purchasePrice = b1.add(b2).doubleValue();
             }
         }
-        this.unrealizedProfit = getStockValue() - purchasePrice;
+
+        this.unrealizedProfit = new Double(Math.round(  (getStockValue() - purchasePrice)*100))/100;
+
+        //this.unrealizedProfit = getStockValue() - purchasePrice;
     }
 
 
@@ -256,6 +262,7 @@ public class User extends Person implements User_Account, Observer_Stock{
                     int prior = (int) this.profit;
                     profit += stock.getCurrentPrice() - portfolio.get(stock.getSymbol()).get(0).getPurchasePrice();
                     portfolio.get(stock.getSymbol()).remove(0);
+                    profit = new Double(Math.round(profit*100))/100;
                     System.out.println(profit);
                     sql.updateProfit(this.username, (int) this.profit);                 // updates db
                     System.out.println("db updated");
