@@ -102,7 +102,7 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
         cb_stocksOwned.setSize(1, 1);
         p_center.add(l_profit);
         p_center.add(new JLabel()); // Empty label for formatting
-        f.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
         p_north = new JPanel(new GridLayout(2, 1));
         p_north.add(l_nameFirst);
         p_north.add(l_nameLast);
