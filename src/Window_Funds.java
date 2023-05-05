@@ -9,6 +9,7 @@
  */
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
@@ -39,12 +40,15 @@ public class Window_Funds{
         b_deposit.setBounds(50, 150, 200, 30);
         b_withdraw.setBounds(50, 200, 200, 30);
         b_cancel.setBounds(50, 250, 200, 30);
+        b_deposit.setPreferredSize(new Dimension(300, 100));
+        b_withdraw.setPreferredSize(new Dimension(300, 100));
+        b_cancel.setPreferredSize(new Dimension(300, 100));
         f.add(l_prompt);
         f.add(tf_amount);
         f.add(b_deposit);
         f.add(b_withdraw);
         f.add(b_cancel);
-        f.setSize(500, 500);
+        f.setSize(600, 600);
         f.setLayout(null);
         f.setVisible(true);
         b_deposit.addActionListener(new ActionListener(){

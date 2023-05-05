@@ -71,7 +71,7 @@ public class Window_Trade implements ActionListener, Observer_User{
         f.add(b_sell);
         f.add(b_cancel);
         
-        f.setSize(800, 800);
+        f.setSize(600, 600);
         f.setLayout(null);
         f.setVisible(true);
     }

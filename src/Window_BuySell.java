@@ -61,7 +61,7 @@
         f.add(b_action);
         f.add(b_cancel);
         
-        f.setSize(800, 800);
+        f.setSize(600, 600);
         f.setLayout(null);
         f.setVisible(true);
         

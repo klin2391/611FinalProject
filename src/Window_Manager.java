@@ -96,6 +96,7 @@ public class Window_Manager implements ActionListener{
             new Window_Settings(m);
         }
         else if (e.getSource() == b_logout) {
+            new Window_Root();
             f.dispose();
         }
     }

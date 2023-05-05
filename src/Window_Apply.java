@@ -63,7 +63,7 @@ public class Window_Apply extends JFrame implements ActionListener {
         f.add(pf_confirmPassword);
         f.add(b_apply);
         f.add(b_back);
-        f.setSize(500, 600);
+        f.setSize(600, 600);
         f.setLayout(null);
         f.setVisible(true);
         sql = new SQL();
