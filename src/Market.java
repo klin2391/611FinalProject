@@ -22,7 +22,7 @@ public class Market {
     public Market(Manager m) {
         manager = m;
         //stocks = new ArrayList<Stock>();
-        this.stocks = sql.getAllAvailableStocks();
+        stocks = sql.getAllAvailableStocks();
         users = new ArrayList<User>();
     }
 
@@ -38,7 +38,7 @@ public class Market {
     public Market(ArrayList<Stock> stocks, ArrayList<User> users, Manager m) {
         this(m);
         if (stocks != null) {
-            this.stocks = stocks;
+            stocks = stocks;
         }
         if (users != null) {
             this.users = users;

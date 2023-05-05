@@ -28,6 +28,8 @@ public class Window_Manager implements ActionListener{
     public Window_Manager(Manager m){
         f = new JFrame("Manager");
         this.m = m;
+        System.out.println(m.getObs().size());
+        System.out.println(this.m.getObs().size());
         l_welcome = new JLabel("Welcome, " + m.getUsername() + "!");
         b_approve = new JButton("Approve/Reject");
         b_viewUsers = new JButton("View Users");
@@ -100,7 +102,7 @@ public class Window_Manager implements ActionListener{
             new Window_Settings(m);
         }
         else if (e.getSource() == b_logout) {
-            new Window_Root();
+//            new Window_Root();
             f.dispose();
         }
     }

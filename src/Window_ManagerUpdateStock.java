@@ -70,11 +70,17 @@ public class Window_ManagerUpdateStock implements ActionListener {
     // Action Listener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == b_update) {
-            stockPrice = Double.parseDouble(tf_stockPrice.getText());
+            try {
+                stockPrice = Double.parseDouble(tf_stockPrice.getText());
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(f, "Please enter a valid price!");
+                return;
+            }
             m.updateStock(selectedStock,stockPrice);
             JOptionPane.showMessageDialog(f, "Update "+selectedStock+ " price to " + String.valueOf(stockPrice) + " successfully!");
             tf_stockPrice.setText("Stock Price");
             updateComboBox();
+
             //f.dispose();
         }
         else if (e.getSource() == b_updateAll) {

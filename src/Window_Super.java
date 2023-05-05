@@ -16,10 +16,12 @@ public class Window_Super implements ActionListener{
     private JButton b_options;
     private JButton b_logout;
     private User user;
+    private Manager m;
 
     // Constructor
-    public Window_Super(User user){
+    public Window_Super(User user, Manager m){
         this.user = user;
+        this.m = m;
         f = new JFrame("Super User" + user.getUsername());
         l_welcome = new JLabel("Welcome " + user.getUsername() + "!");
         b_stocks = new JButton("Stocks");
@@ -48,7 +50,7 @@ public class Window_Super implements ActionListener{
     // Action Listener
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == b_stocks){
-            new Window_User(user, 0);
+            new Window_User(user, 0, m);
             f.dispose();
         }
         else if(e.getSource() == b_options){
@@ -56,7 +58,7 @@ public class Window_Super implements ActionListener{
             f.dispose();
         }
         else if(e.getSource() == b_logout){
-            new Window_Login();
+            new Window_Login(m);
             f.dispose();
         }
     }
