@@ -59,7 +59,7 @@ public class Window_Settings implements ActionListener{
         f.add(b_changePassword);
         f.add(b_cancel);
 
-        f.setSize(500, 500);
+        f.setSize(600, 600);
         f.setLayout(null);
         f.setVisible(true);
     }

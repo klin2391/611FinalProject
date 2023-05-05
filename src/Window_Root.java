@@ -91,11 +91,9 @@ public class Window_Root extends JFrame implements ActionListener  {
 //            f.dispose();
         }
         else if (e.getSource() == b_login){
-
             //new Window_Login();
 
             new Window_Login(m);
-
 //            f.dispose();
         }
     }
