@@ -57,6 +57,7 @@
         tf_numStocks.setBounds(50, 200, 200, 30);
         b_action.setBounds(50, 250, 200, 30);
         b_cancel.setBounds(50, 300, 200, 30);
+
         this.add(cb_stocks);
         this.add(l_currentVal);
         this.add(l_numOwned);
@@ -64,9 +65,10 @@
         this.add(b_action);
         this.add(b_cancel);
 
-        this.setSize(800, 800);
+        this.setSize(600, 600);
         this.setLayout(null);
         this.setVisible(true);
+
         
     }
     // Action Listener for the JComboBox

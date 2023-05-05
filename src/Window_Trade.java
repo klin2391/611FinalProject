@@ -74,9 +74,10 @@ public class Window_Trade extends JPanel implements ActionListener, Observer_Use
         this.add(b_sell);
         this.add(b_cancel);
 
-        this.setSize(800, 800);
+        this.setSize(600, 600);
         this.setLayout(null);
         this.setVisible(true);
+
     }
     
 

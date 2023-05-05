@@ -10,10 +10,9 @@
  * TODO Remove window from user when closed
  */
 
-import javax.swing.*;  
+import javax.swing.*;
+import java.awt.*;
 import java.util.*;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.*;
 
 public class Window_User extends JPanel implements ActionListener, Observer_User{
@@ -25,6 +24,7 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
     private JLabel l_cashBuyPower;
     private JLabel l_accountValue;
     private JLabel l_profit;
+    private JLabel l_viewStocks;
     private JComboBox <String> cb_stocksOwned;          //Combo box allows drop down
     private JButton b_depositWithdraw;
     private JButton b_buySell;
@@ -46,18 +46,20 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
         l_cashBuyPower = new JLabel("Cash Buying Power: " + u.getBalance());
         l_accountValue = new JLabel("Account Value: " + u.getTotalValue());
         l_profit = new JLabel("Profit: " + u.getProfit());
-        b_depositWithdraw= new JButton("Deposit/Withdraw Funds");
+        l_viewStocks = new JLabel("View Stocks Below");
+        b_depositWithdraw = new JButton("Deposit/Withdraw Funds");
         b_buySell = new JButton("Buy/Sell Stocks");
         b_settings = new JButton("Settings");
-        if (caller == 0){                                   // If called from login
+        if (caller == 0) {
             b_logout = new JButton("Logout");
-        }
-        else if (caller == 1){                              // If called from settings
+        } else if (caller == 1) {
             b_logout = new JButton("Cancel");
         }
-        cb_stocksOwned = new JComboBox <String>();
-        cb_stocksOwned.addItem("Select a Stock to View");
-        for (String s : u.getPortfolio().keySet()){         //Adds owned stocks to list
+
+
+        JPanel p_stocks = new JPanel(new GridLayout(2, 1));
+        cb_stocksOwned = new JComboBox<String>();
+        for (String s : u.getPortfolio().keySet()) {
             cb_stocksOwned.addItem(s);
         }
 
@@ -66,37 +68,54 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
         b_buySell.addActionListener(this);
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
+        b_depositWithdraw.setPreferredSize(new Dimension(200, 50));
+        b_buySell.setPreferredSize(new Dimension(150, 50));
+        b_settings.setPreferredSize(new Dimension(100, 50));
+        b_logout.setPreferredSize(new Dimension(100, 50));
 
-        l_nameFirst.setBounds(50, 50, 200, 30);
-        l_nameLast.setBounds(50, 100, 200, 30);
-        l_cashBuyPower.setBounds(50, 150, 200, 30);
-        l_accountValue.setBounds(50, 250, 200, 30);
-        l_profit.setBounds(50, 300, 200, 30);
-        cb_stocksOwned.setBounds(50, 200, 200, 30);
-        b_depositWithdraw.setBounds(50, 300, 200, 30);
-        b_buySell.setBounds(50, 350, 200, 30);
-        b_settings.setBounds(50, 450, 200, 30);
-        b_logout.setBounds(50, 400, 200, 30);
+        Font font = new Font("Monospaced", Font.BOLD, 18);
 
-        this.setLayout(new BorderLayout());
-        p_north = new JPanel();
+        l_nameFirst.setHorizontalAlignment(JLabel.CENTER);
+        l_nameFirst.setFont(font);
+        l_nameLast.setHorizontalAlignment(JLabel.CENTER);
+        l_nameLast.setFont(font);
+        l_cashBuyPower.setHorizontalAlignment(JLabel.CENTER);
+        l_cashBuyPower.setFont(font);
+        l_accountValue.setHorizontalAlignment(JLabel.CENTER);
+        l_accountValue.setFont(font);
+        l_profit.setHorizontalAlignment(JLabel.CENTER);
+        l_profit.setFont(font);
+        l_viewStocks.setHorizontalAlignment(JLabel.CENTER);
+        l_viewStocks.setFont(font);
+
+        // Create GridLayout with 3 rows and 2 columns for p_center panel
+        p_center = new JPanel(new GridLayout(3, 2, 5, 5));
+        p_center.add(l_cashBuyPower);
+        p_center.add(l_viewStocks);
+
+        p_center.add(l_accountValue);
+        JPanel p_combo = new JPanel();
+        p_center.add(p_combo);
+        cb_stocksOwned.setPreferredSize(new Dimension(200, 50));
+        p_combo.add(cb_stocksOwned);
+
+        cb_stocksOwned.setSize(1, 1);
+        p_center.add(l_profit);
+        p_center.add(new JLabel()); // Empty label for formatting
+        f.setLayout(new BorderLayout());
+        p_north = new JPanel(new GridLayout(2, 1));
         p_north.add(l_nameFirst);
         p_north.add(l_nameLast);
-        p_center = new JPanel();
-        p_center.add(l_cashBuyPower);
-        p_center.add(l_accountValue);
-        p_center.add(l_profit);
-        p_center.add(cb_stocksOwned);
-        p_south = new JPanel(new FlowLayout());
-        if (caller == 0){                                   // If called from login
+        p_south = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        if (caller == 0) {
             p_south.add(b_depositWithdraw);
             p_south.add(b_buySell);
             p_south.add(b_settings);
             p_south.add(b_logout);
-        }
-        else if (caller == 1){                              // If called from settings
+        } else if (caller == 1) {
             p_south.add(b_logout);
         }
+
         System.out.println(caller);
         this.add(p_north, BorderLayout.NORTH);
         this.add(p_center, BorderLayout.CENTER);

@@ -66,9 +66,10 @@ public class Window_Apply extends JPanel implements ActionListener {
         this.add(pf_confirmPassword);
         this.add(b_apply);
         this.add(b_close);
-        this.setSize(500, 600);
+        this.setSize(600, 600);
         this.setLayout(null);
         this.setVisible(true);
+
         sql = new SQL();
     }
 

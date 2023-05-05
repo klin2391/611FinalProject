@@ -54,14 +54,10 @@ public class Window_Login extends JPanel implements ActionListener {
         this.add(b_login);
         this.add(b_forgot);
         this.add(b_close);
-        this.setSize(500, 500);
+        this.setSize(600, 600);
         this.setLayout(null);
         this.setVisible(true);
 
-//        f.add(p);
-//        f.setSize(500, 500);
-//        f.setLayout(null);
-//        f.setVisible(true);
         sql = new SQL();
 //        this.m = m;
     }

@@ -9,6 +9,7 @@
  */
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
@@ -41,14 +42,19 @@ public class Window_Funds extends JPanel{
         b_deposit.setBounds(50, 150, 200, 30);
         b_withdraw.setBounds(50, 200, 200, 30);
         b_cancel.setBounds(50, 250, 200, 30);
+
+        b_deposit.setPreferredSize(new Dimension(300, 100));
+        b_withdraw.setPreferredSize(new Dimension(300, 100));
+        b_cancel.setPreferredSize(new Dimension(300, 100));
         this.add(l_prompt);
         this.add(tf_amount);
         this.add(b_deposit);
         this.add(b_withdraw);
         this.add(b_cancel);
-        this.setSize(500, 500);
+        this.setSize(600, 600);
         this.setLayout(null);
         this.setVisible(true);
+
         b_deposit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 if (tf_amount.getText().isEmpty()){
