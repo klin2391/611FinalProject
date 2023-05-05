@@ -13,8 +13,9 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 
-public class Window_Funds{
-    private JFrame f;
+public class Window_Funds extends JPanel{
+//    private JFrame f;
+    Window w;
     private int amount;
     private User user;
     private ArrayList <Window_User> windows;    // Windows to update
@@ -25,11 +26,12 @@ public class Window_Funds{
     private JButton b_cancel;
 
     // Default Constructor
-    public Window_Funds(User u, Window_User wu) {
+    public Window_Funds(User u, Window_User wu, Window w) {
         this.user = u;
         windows = new ArrayList <Window_User>();
         windows.add(wu);
-        f = new JFrame("Deposit/Withdraw Funds");
+//        f = new JFrame("Deposit/Withdraw Funds");
+        this.w = w;
         l_prompt = new JLabel("Enter Amount: ");
         tf_amount= new JTextField();
         b_deposit= new JButton("Deposit");
@@ -40,17 +42,19 @@ public class Window_Funds{
         b_deposit.setBounds(50, 150, 200, 30);
         b_withdraw.setBounds(50, 200, 200, 30);
         b_cancel.setBounds(50, 250, 200, 30);
+
         b_deposit.setPreferredSize(new Dimension(300, 100));
         b_withdraw.setPreferredSize(new Dimension(300, 100));
         b_cancel.setPreferredSize(new Dimension(300, 100));
-        f.add(l_prompt);
-        f.add(tf_amount);
-        f.add(b_deposit);
-        f.add(b_withdraw);
-        f.add(b_cancel);
-        f.setSize(600, 600);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(l_prompt);
+        this.add(tf_amount);
+        this.add(b_deposit);
+        this.add(b_withdraw);
+        this.add(b_cancel);
+        this.setSize(600, 600);
+        this.setLayout(null);
+        this.setVisible(true);
+
         b_deposit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 if (tf_amount.getText().isEmpty()){
@@ -60,7 +64,8 @@ public class Window_Funds{
                     amount = Integer.parseInt(tf_amount.getText());
                     u.addBalance(amount);
                     updateWindows(u);
-                    f.dispose();
+                    w.update(new Window_User(u, 0, w));
+                    w.setTitle(u.getUsername());
                 }
             }
         });
@@ -73,19 +78,21 @@ public class Window_Funds{
                     amount = Integer.parseInt(tf_amount.getText());
                     if (u.getBalance() < amount){
 //                        Window_Alert we = new Window_Alert("Insufficient Funds!", false);
-                        JOptionPane.showMessageDialog(f, "Insufficient Funds!");
+                        JOptionPane.showMessageDialog(w.getFrame(), "Insufficient Funds!");
                     }
                     else{
                         u.subtractBalance(amount);
                         updateWindows(u);
-                        f.dispose();
+                        w.update(new Window_User(u, 0, w));
+                        w.setTitle(u.getUsername());
                     }
                 }
             }
         });
         b_cancel.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                f.dispose();
+                w.update(new Window_User(user, 0, w));
+                w.setTitle(user.getUsername());
             }
         });
     }

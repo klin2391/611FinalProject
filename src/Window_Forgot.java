@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Window_Forgot extends JPanel implements ActionListener{
     //    private JFrame f;                           // Frame
+    private Window w;
     private JLabel l_welcome;
     private JTextField tf_username;
     private JTextField tf_email;
@@ -22,8 +23,9 @@ public class Window_Forgot extends JPanel implements ActionListener{
     private SQL sql;
 
     // Constructor
-    public Window_Forgot(){
+    public Window_Forgot(Window w){
 //        f = new JFrame("Forgot Password");
+        this.w = w;
         l_welcome = new JLabel("Forgot Password");
         tf_username = new JTextField("Username");
         tf_email = new JTextField("Email");
@@ -49,27 +51,22 @@ public class Window_Forgot extends JPanel implements ActionListener{
     }
 
     // Action Listener
-
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == b_submit){
             username = tf_username.getText();
             email = tf_email.getText();
-            // VERIFY ACCOUNT
-            if(sql.customerExists(username)){
-                System.out.println("Username exist");
+            if(sql.customerExists(username)){       // VERIFY ACCOUNT
                 String pass = sql.recoverPassword(username, email);
                 new Window_EmailNotification( "Your password is: " + pass, email + " SUBJECT: Password Recovery" );
-//                f.dispose();
+                w.update(new Window_Login(w));
             }
             else{
                 JOptionPane.showMessageDialog(null, "Incorrect Username or Email");
             }
         }
         else if(e.getSource() == b_cancel){
-            // Remove this window and go back to login
-//            this.setVisible(false);
-//            f.dispose();
-//            new Window_Login(m);
+            Window_Login wl = new Window_Login(w);
+            w.update(wl);
         }
     }
 }

@@ -69,6 +69,7 @@ public class Window_Settings implements ActionListener{
             if (p.getPassword().equals(tf_passwordCurrent.getText())) {
                 if (tf_passwordNew.getText().equals(tf_passwordConfirm.getText())) {
                     p.setPassword(tf_passwordNew.getText());
+                    JOptionPane.showMessageDialog(f, "Password changed.");
                     f.dispose();
                 }
                 else {

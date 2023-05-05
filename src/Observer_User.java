@@ -4,7 +4,8 @@
  * 20APR2023
  * 
  * This interface is used to update listeners
- * when the user is updated
+ * when the user is updated.
+ * Used in windows and manager
  */
 
 public interface Observer_User {

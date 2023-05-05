@@ -12,8 +12,9 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 
 
-public class Window_Trade implements ActionListener, Observer_User{
-    private JFrame f;
+public class Window_Trade extends JPanel implements ActionListener, Observer_User, Observer_Stock{
+//    private JFrame f;
+    private Window w;
     private HashMap <String, ArrayList<Stock>> myStocks;
     private ArrayList <Stock> worldStocks;
     private JLabel l_browse;
@@ -26,13 +27,15 @@ public class Window_Trade implements ActionListener, Observer_User{
     private User user;
 
     // Default Constructor
-    public Window_Trade(HashMap <String, ArrayList<Stock>> mine, ArrayList <Stock> world, User u){
+    public Window_Trade(HashMap <String, ArrayList<Stock>> mine, ArrayList <Stock> world, User u, Window w){
         this.user = u;
         register(user);
+        register(Manager.getInstance());
         this.myStocks = mine;
         this.worldStocks = world;
 
-        f = new JFrame("Trade");
+//        f = new JFrame("Trade");
+        this.w = w;
         l_browse = new JLabel("Browse Stocks");
         l_owned = new JLabel("My Stocks");
         cb_allStocks = new JComboBox <String>();
@@ -63,17 +66,18 @@ public class Window_Trade implements ActionListener, Observer_User{
         b_sell.setBounds(50, 350, 200, 30);
         b_cancel.setBounds(50, 400, 200, 30);
 
-        f.add(l_browse);
-        f.add(l_owned);
-        f.add(cb_allStocks);
-        f.add(cb_stocksOwned);
-        f.add(b_buy);
-        f.add(b_sell);
-        f.add(b_cancel);
-        
-        f.setSize(600, 600);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(l_browse);
+        this.add(l_owned);
+        this.add(cb_allStocks);
+        this.add(cb_stocksOwned);
+        this.add(b_buy);
+        this.add(b_sell);
+        this.add(b_cancel);
+
+        this.setSize(600, 600);
+        this.setLayout(null);
+        this.setVisible(true);
+
     }
     
 
@@ -83,8 +87,6 @@ public class Window_Trade implements ActionListener, Observer_User{
             if (cb_allStocks.getSelectedItem() != "Select a Stock"){
                 String symbol = (String)cb_allStocks.getSelectedItem();
                 for (int i = 0; i < worldStocks.size(); i++){
-                    System.out.println(worldStocks.get(i).getSymbol());
-                    System.out.println(worldStocks.get(i).getHistory());
                     if (worldStocks.get(i).getSymbol().equals(symbol)){
                         Window_Stock wsi = new Window_Stock(new ArrayList<Stock>(Arrays.asList(worldStocks.get(i))), false);        // false means it's not owned
                     }
@@ -103,17 +105,22 @@ public class Window_Trade implements ActionListener, Observer_User{
         }
         else if (e.getSource() == b_buy){
             TradeBehavior tb = new TradeBehavior_Buy();
-            Window_BuySell wbs = new Window_BuySell(worldStocks, user, tb );
+            w.update(new Window_BuySell(worldStocks, user, tb, w));
+            w.setTitle("Buy");
         }
         else if (e.getSource() == b_sell){
             TradeBehavior tb = new TradeBehavior_Sell();
-            Window_BuySell wss = new Window_BuySell(worldStocks, user, tb);
+            w.update(new Window_BuySell(worldStocks, user, tb,w));
+            w.setTitle("Sell");
         }
         else if (e.getSource() == b_cancel){
-            f.dispose();
+            w.update(new Window_User(user, 0, w));
+            w.setTitle(user.getUsername());
         }
     
     }
+
+    // Observer Pattern
     public void update(User u){
         this.user = u;
         this.myStocks = u.getPortfolio();
@@ -122,10 +129,22 @@ public class Window_Trade implements ActionListener, Observer_User{
         myStocks.forEach((k, v) -> {
             cb_stocksOwned.addItem(k);
         });
-        f.dispose();
     }
 
     public void register(User u){
         u.addWindow((Observer_User) this);
+    }
+
+    public void register(Manager m) {
+        m.addObs(this);
+    }
+
+    public void update(){
+        cb_allStocks.removeAllItems();
+        cb_allStocks.addItem("Select a Stock");
+        SQL sql = new SQL();
+        for (int i = 0; i < sql.getAllAvailableStocks().size(); i++){
+            cb_allStocks.addItem(sql.getAllAvailableStocks().get(i).getSymbol());
+        }
     }
 }

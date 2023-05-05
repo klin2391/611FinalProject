@@ -3,8 +3,8 @@
  * by Kevin Lin (lin2391@bu.edu)
  * 215APR2023
  * 
- * This class is a tentative draft at creating a stock object
- * TODO: implement listener for root stocks
+ * This class is a tentative draft at creating a stock object.
+ * Stocks have a name, symbol, and price (includes current and history)
  */
 
 import java.util.ArrayList;
@@ -13,8 +13,6 @@ import java.util.ArrayList;
     private String name;
     private String symbol;
     private Value price;                // Tracks current and past prices of stocks
-
-
     private double purchasePrice;
     private boolean owned;
     private SQL sql;
@@ -50,12 +48,12 @@ import java.util.ArrayList;
         this.symbol = symbol;
         this.price = new Value(symbol);
         this.owned = false;
-
      }
 
      public Stock(String symbol, double purchasePrice){
         this(symbol);
         this.purchasePrice = purchasePrice;
+        this.owned = true;
      }
 
     // Accessor methods
@@ -108,19 +106,17 @@ import java.util.ArrayList;
         this.owned = owned;
     }
 
-    // I want to change this to implement a listener
+
+    // Updates current price of stock
     public void updatePrice(ArrayList<Stock> stocks){
         for (int i = 0; i < stocks.size(); i++){
             if (stocks.get(i).getSymbol().equals(this.symbol)){
-                this.price.setCurrent(stocks.get(i).getCurrentPrice());
+                setPrice(stocks.get(i).getCurrentPrice());
             }
         }
     }
 
-
     public void setPrice(double newPrice){
-//        this.getHistory().add(this.getCurrentPrice());
         price.setCurrent(newPrice);
     }
-
  }

@@ -3,7 +3,9 @@
  * by Huy Phan
  * 23APR2023
  *
- * This class allows interaction with the database
+ * This class allows interaction with the database.
+ * It is a long file, but organized by the tables they affect.
+ * Search for "METHODS"
  *
  */
 
@@ -14,8 +16,8 @@ public class SQL {
     private Connection connect() throws ClassNotFoundException {
         // SQLite connection string
         //String url = "jdbc:sqlite:/Users/huyphan/stocktrading.db";
-        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
-        //String url = "jdbc:sqlite:C:/Users/kevin/OneDrive/Documents/AY23-2/GRS CS611/stocktrading.db";
+//        String url = "jdbc:sqlite:/Users/neko/Desktop/stocktrading.db";
+        String url = "jdbc:sqlite:C:/Users/kevin/OneDrive/Documents/AY23-2/GRS CS611/stocktrading.db";
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -24,126 +26,6 @@ public class SQL {
             System.out.println(e.getMessage());
         }
         return conn;
-    }
-
-    // Adds a customer to the database
-    public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance, int profit) {
-        String sql = "INSERT INTO Customers(id, firstName, lastName, username, password, balance, email,profit) VALUES(?,?,?,?,?,?,?,?)";
-        //String sql = "INSERT INTO Customers(id, firstName, lastName, balance, email, userName, password) VALUES(?,?,?,?,?,?,?)";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.setString(2, firstName);
-            pstmt.setString(3, lastName);
-            pstmt.setString(4, username);
-            pstmt.setString(5, password);
-            pstmt.setInt(6, balance);
-            pstmt.setString(7, email);
-
-
-
-            pstmt.setInt(8, profit);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    // Updates a password in the database based on unique username. Can be either manager or customer
-    public void updatePassword(String username, String password){
-        String sql = "UPDATE Customers SET password = ? WHERE username = ?";            // Update the customer's password
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, password);                                   // set the corresponding param
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();                                                        // update
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        sql = "UPDATE Managers SET password = ? WHERE username = ?";                    // Update the manager's password
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            // set the corresponding param
-            pstmt.setString(1, password);
-            pstmt.setString(2, username);
-            // update
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    // Updates balance for a customer
-    public void updateBalance(String username, int balance){
-        String sql = "UPDATE Customers SET balance = ? WHERE username = ?";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, balance);
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    public void updateStockPrice(String stockName,  double price){
-//        String sql = "UPDATE Stocks SET price = ? WHERE name = ?";
-        String sql = "UPDATE Stocks SET price9 = price8, " +
-                "price8 = price7, " +
-                "price7 = price6, " +
-                "price6 = price5, " +
-                "price5 = price4, " +
-                "price4 = price3, " +
-                "price3 = price2, " +
-                "price2 = price1, " +
-                "price1 = priceCurrent, " +
-                "priceCurrent = ? " +
-                "WHERE name = ?";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, price);
-            pstmt.setString(2, stockName);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void setStockUnavailable(String stockName){
-        String sql = "UPDATE Stocks SET priceCurrent = ? WHERE name = ?";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, 0);
-            pstmt.setString(2, stockName);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    public void setStockAvailable(String stockName) {
-        String sql = "UPDATE Stocks SET priceCurrent = ? WHERE name = ?";
-
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, 1);
-            pstmt.setString(2, stockName);
-            pstmt.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     // Gets the next available ID for a table
@@ -163,49 +45,96 @@ public class SQL {
         return id + 1;
     }
 
+    /*
+        *
+        *
+        *
+        *
+        * CUSTOMER METHODS
+        *
+        *
+        *
+        *
+        *
+     */
+
+    // Adds a customer to the database
+    public void insertCustomer(int id, String firstName, String lastName, String email, String username, String password, int balance, int profit) {
+        String sql = "INSERT INTO Customers(id, firstName, lastName, username, password, balance, email,profit) VALUES(?,?,?,?,?,?,?,?)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, firstName);
+            pstmt.setString(3, lastName);
+            pstmt.setString(4, username);
+            pstmt.setString(5, password);
+            pstmt.setInt(6, balance);
+            pstmt.setString(7, email);
+            pstmt.setInt(8, profit);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Updates a password in the database based on unique username. Can be either manager or customer
+    public void updatePassword(String username, String password){
+        String sql = "UPDATE Customers SET password = ? WHERE username = ?";            // Update the customer's password
+        String sql1 = "UPDATE Managers SET password = ? WHERE username = ?";                    // Update the manager's password
+        ArrayList<String> queries = new ArrayList<String>();
+        queries.add(sql);
+        queries.add(sql1);
+
+        for (String s: queries){
+            try (Connection conn = this.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(s)) {
+                pstmt.setString(1, password);                                   // set the corresponding param
+                pstmt.setString(2, username);
+                pstmt.executeUpdate();                                                        // update
+            }
+            catch (SQLException | ClassNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    // Updates balance for a customer
+    public void updateBalance(String username, int balance){
+        String sql = "UPDATE Customers SET balance = ? WHERE username = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, balance);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     // Checks if a customer exists in the database as either approved or pending, or manager
     public boolean customerExists(String username) {
-//        String sql = "SELECT * FROM Customers WHERE email = ?";
-        String sql = "SELECT * FROM Customers WHERE password = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            pstmt.setString(1,username);
-            ResultSet rs  = pstmt.executeQuery();
-            if (rs.next()) {
-                System.out.println("Customer Exists!");
-                return true;
+        String sql = "SELECT * FROM Customers WHERE username = ?";
+        String sql1 = "SELECT * FROM Managers WHERE username = ?";
+        ArrayList<String> queries = new ArrayList<String>();
+        queries.add(sql);
+        queries.add(sql1);
+        for (String s: queries){
+            try (Connection conn = this.connect();
+                 PreparedStatement pstmt  = conn.prepareStatement(s)){
+                pstmt.setString(1,username);
+                ResultSet rs  = pstmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("Customer Exists!");
+                    return true;
+                }
             }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-//        sql = "SELECT * FROM PendingCustomers WHERE userName = ?";
-//        try (Connection conn = this.connect();
-//             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-//            pstmt.setString(1,username);
-//            ResultSet rs  = pstmt.executeQuery();
-//            if (rs.next()) {
-//                System.out.println("Customer Exists!");
-//                return true;
-//            }
-//        }
-//        catch (SQLException | ClassNotFoundException e) {
-//            System.out.println(e.getMessage());
-//        }
-
-        sql = "SELECT * FROM Managers WHERE username = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            pstmt.setString(1,username);
-            ResultSet rs  = pstmt.executeQuery();
-            if (rs.next()) {
-                System.out.println("Customer Exists!");
-                return true;
+            catch (SQLException | ClassNotFoundException e) {
+                System.out.println(e.getMessage());
             }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
         }
         System.out.println("Customer Does Not Exist!");
         return false;
@@ -213,10 +142,7 @@ public class SQL {
 
     // Checks to see if username and password are right
     public boolean verifyCustomerAccount(String username, String password){
-//        String sql = "SELECT * FROM Customers WHERE email = ? AND userName = ?";
         String sql = "SELECT * FROM Customers WHERE username = ? AND password = ?";
-//        String sql = "SELECT * FROM Customers WHERE password = ? AND balance = ?";
-
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -237,7 +163,6 @@ public class SQL {
 
     // Gets the password based on if username and email are correct
     public String recoverPassword(String username, String email){
-//        String sql = "SELECT * FROM Customers WHERE email = ? AND balance = ?";
         String sql = "SELECT * FROM Customers WHERE username = ? AND email = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -258,9 +183,9 @@ public class SQL {
 
     // Returns a user based on unique username
     public User getUser(String username){
-//            String sql = "SELECT * FROM Customers WHERE email = ?";
         String sql = "SELECT * FROM Customers WHERE username = ?";
         User u;
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -295,38 +220,20 @@ public class SQL {
         }
         return customers;
     }
-    public ArrayList<Stock> getAllStocks(){
-        ArrayList<Stock> stocks = new ArrayList<>();
-        String sql = "SELECT * FROM Stocks";
 
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            ResultSet rs  = pstmt.executeQuery();
-            while (rs.next()) {
-                stocks.add(new Stock(rs.getString("Symbol")));
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return stocks;
-    }
-    public ArrayList<Stock> getAllAvailableStocks(){
-        ArrayList<Stock> stocks = new ArrayList<>();
-        String sql = "SELECT * FROM Stocks WHERE available = 1";
 
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            ResultSet rs  = pstmt.executeQuery();
-            while (rs.next()) {
-                stocks.add(new Stock(rs.getString("Name"), rs.getString("Symbol"), rs.getInt("priceCurrent")));
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return stocks;
-    }
+    /*
+     *
+     *
+     *
+     *
+     * Pending METHODS
+     *
+     *
+     *
+     *
+     *
+     */
 
     // Inserts a pending user into the database
     public void insertPending(int id, String firstName, String lastName, String email, String username, String password) {
@@ -349,7 +256,7 @@ public class SQL {
 
     // Returns a user based on unique username from pending
     public User getPendingUser(String username){
-            String sql = "SELECT * FROM PendingCustomers WHERE userName = ?";
+        String sql = "SELECT * FROM PendingCustomers WHERE userName = ?";
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             pstmt.setString(1,username);
@@ -363,7 +270,6 @@ public class SQL {
         }
         System.out.println("Account not Found!");
         return null;
-
     }
 
     // Removes user from Pending database
@@ -373,7 +279,6 @@ public class SQL {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.executeUpdate();
-
         }
         catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
@@ -397,6 +302,35 @@ public class SQL {
         }
         return customers;
     }
+
+    // Updates profit for a customer
+    public void updateProfit(String username, int profit) {
+        String sql = "UPDATE Customers SET profit = ? WHERE username = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, profit);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+            System.out.println("DBG");
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /*
+     *
+     *
+     *
+     *
+     * Manager METHODS
+     *
+     *
+     *
+     *
+     *
+     */
+
     // Inserts a manager into the database
     public void insertManager(int id, String firstName, String lastName, String username, String password, String email, int minToBeSuper) {
         String sql = "INSERT INTO Managers(id, email, lastName, username, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
@@ -442,7 +376,7 @@ public class SQL {
 
     // Returns a manager based on unique username
     public Manager getManager(String username){
-            String sql = "SELECT * FROM Managers WHERE username = ?";
+        String sql = "SELECT * FROM Managers WHERE username = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
@@ -459,8 +393,139 @@ public class SQL {
         return null;
     }
 
-    public void initManager(){
+    // Reads the minimum value for a customer to be a super
+    public int getMinToBeSuper(){
+        String sql = "SELECT * FROM Managers";
 
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+                System.out.println(rs.getInt("minToBeSuper"));
+                return rs.getInt("minToBeSuper");
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    // Updates the minimum value for a customer to be a super
+    public void updateMinToBeSuper(double min){
+        String sql = "UPDATE Managers SET minToBeSuper = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, min);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /*
+     *
+     *
+     *
+     *
+     * Stock METHODS
+     *
+     *
+     *
+     *
+     *
+     */
+
+    // Updates stock price and updates history
+    public void updateStockPrice(String stockName,  double price){
+        String sql = "UPDATE Stocks SET price9 = price8, " +
+                "price8 = price7, " +
+                "price7 = price6, " +
+                "price6 = price5, " +
+                "price5 = price4, " +
+                "price4 = price3, " +
+                "price3 = price2, " +
+                "price2 = price1, " +
+                "price1 = priceCurrent, " +
+                "priceCurrent = ? " +
+                "WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, price);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Sets as unavailable
+    public void setStockUnavailable(String stockName){
+        String sql = "UPDATE Stocks SET available = ? WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, 0);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Sets as available
+    public void setStockAvailable(String stockName) {
+        String sql = "UPDATE Stocks SET priceCurrent = ? WHERE name = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, 1);
+            pstmt.setString(2, stockName);
+            pstmt.executeUpdate();
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Returns all stocks
+    public ArrayList<Stock> getAllStocks(){
+        ArrayList<Stock> stocks = new ArrayList<>();
+        String sql = "SELECT * FROM Stocks";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+                stocks.add(new Stock(rs.getString("Symbol")));
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return stocks;
+    }
+
+    // Returns all available stocks
+    public ArrayList<Stock> getAllAvailableStocks(){
+        ArrayList<Stock> stocks = new ArrayList<>();
+        String sql = "SELECT * FROM Stocks WHERE available = 1";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            ResultSet rs  = pstmt.executeQuery();
+            while (rs.next()) {
+                stocks.add(new Stock(rs.getString("Name"), rs.getString("Symbol"), rs.getInt("priceCurrent")));
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return stocks;
     }
 
     // Inserts a stock into db
@@ -480,6 +545,97 @@ public class SQL {
         }
     }
 
+    // Gets current price of a stock
+    public Double getStockPrice(String symbol){
+        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, symbol);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("priceCurrent");
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1.0;
+    }
+
+    // Gets stock history
+    public ArrayList<Double> getStockHistory(String symbol) {
+        ArrayList<Double> history = new ArrayList<>();
+        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, symbol);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                history.add(rs.getDouble("price9"));
+                history.add(rs.getDouble("price8"));
+                history.add(rs.getDouble("price7"));
+                history.add(rs.getDouble("price6"));
+                history.add(rs.getDouble("price5"));
+                history.add(rs.getDouble("price4"));
+                history.add(rs.getDouble("price3"));
+                history.add(rs.getDouble("price2"));
+                history.add(rs.getDouble("price1"));
+                return history;
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return history;
+    }
+
+    // Gets stock name
+    public String getStockName(String symbol){
+        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, symbol);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("name");
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return "";
+    }
+
+    // Checks to see if stocks exist
+    public boolean checkIfStocks(){
+        String sql = "SELECT * FROM Stocks";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    /*
+     *
+     *
+     *
+     *
+     * OwnedStocks METHODS
+     *
+     *
+     *
+     *
+     *
+     */
+
+    // Returns all types of stocks user owns
     public ArrayList<String> getUserStockSymbols(User u){
         ArrayList<String> stocks = new ArrayList<>();
         String sql = "SELECT * FROM OwnedStonks WHERE OwnerUsername = ?";
@@ -498,26 +654,7 @@ public class SQL {
         return stocks;
     }
 
-//    public ArrayList<Stock> getUserStocks(User u) {
-//        ArrayList<String> symbols = getUserStockSymbols(u);
-//        ArrayList<Stock> stocks = new ArrayList<>();
-//        String sql = "SELECT * FROM Stocks WHERE Symbol = ?";
-//        try (Connection conn = this.connect();
-//             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-//            for (String s : symbols) {
-//                pstmt.setString(1,s);
-//                ResultSet rs  = pstmt.executeQuery();
-//                if (rs.next()) {
-//                    stocks.add(new Stock(rs.getString("Symbol")));
-//                }
-//            }
-//        }
-//        catch (SQLException | ClassNotFoundException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return stocks;
-//    }
-
+    // Returns all stocks user owns
     public HashMap<String, ArrayList<Stock>> getUserStocks(User u){
         HashMap<String, ArrayList<Stock>> stocks = new HashMap<>();
         String sql = "SELECT * FROM OwnedStonks WHERE OwnerUsername = ?";
@@ -543,6 +680,7 @@ public class SQL {
         return stocks;
     }
 
+    // Inserts a stock into db
     public void insertOwnedStock(Stock s, User u){
         String sql = "INSERT INTO OwnedStonks(Symbol, OwnerUsername, PurchasePrice) VALUES(?,?,?)";
 
@@ -559,20 +697,100 @@ public class SQL {
         }
     }
 
-    // Inserts a trade into db
-    public void insertTrade(int stockID, int customerID) {
-        String sql = "INSERT INTO Trades(stockID, customerID) VALUES(?,?)";
+    // Returns total cost user has spent on a stock
+    public double getStockTotalCost(String symbol, User u){
+        String username = u.getUsername();
+        String sql = "SELECT * FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ?";
+        double totalCost = 0.0;
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, stockID);
-            pstmt.setInt(2, customerID);
+            pstmt.setString(1, symbol);
+            pstmt.setString(2, username);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                totalCost += rs.getDouble("PurchasePrice");
+            }
+            return totalCost;
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return 0.0;
+    }
+
+    // Returns quantity of a stock user owns
+    public int getQuantityStockOwned(String symbol, User u){
+        String username = u.getUsername();
+        String sql = "SELECT * FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ?";
+        int quantity = 0;
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, symbol);
+            pstmt.setString(2, username);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                quantity += 1;
+            }
+            return quantity;
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    // Updates stock avg cost
+    public void updateStockAvgCost(String symbol, User u){
+        String username = u.getUsername();
+        double totalCostStock = getStockTotalCost(symbol, u);
+        double avgCost = totalCostStock / getQuantityStockOwned(symbol, u);
+        String sql = "UPDATE OwnedStonks SET PurchasePrice = ? WHERE Symbol = ? and OwnerUsername = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setDouble(1, avgCost);
+            pstmt.setString(2, symbol);
+            pstmt.setString(3, username);
             pstmt.executeUpdate();
         }
         catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    // Removes a stock from db
+    public void removeStock(Stock s, User u){
+        String username = u.getUsername();
+        String symbol = s.getSymbol();
+        String sql = "DELETE FROM OwnedStonks WHERE rowid = (SELECT rowid FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ? LIMIT 1)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, symbol);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+    /*
+     *
+     *
+     *
+     *
+     * BlackListed METHODS
+     *
+     *
+     *
+     *
+     *
+     */
 
     // Checks if username ins in blacklisted db
     public boolean checkIfUserBlacklisted(String username){
@@ -652,10 +870,24 @@ public class SQL {
         }
     }
 
+    /*
+     *
+     *
+     *
+     *
+     * EligibleSupers METHODS
+     *
+     *
+     *
+     *
+     *
+     */
+
     // Adds user to eligible supers db
     public void addEligible(User u) {
         String username = u.getUsername();
         String sql = "INSERT INTO EligibleSupers(userName) VALUES(?)";
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
@@ -670,6 +902,7 @@ public class SQL {
     public boolean isEligibleToBeSuper(User u) {
         String username = u.getUsername();
         String sql = "SELECT * FROM EligibleSupers WHERE userName = ?";
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
@@ -686,55 +919,11 @@ public class SQL {
         return false;
     }
 
-    // Updates profit for a customer
-    public void updateProfit(String username, int profit) {
-        String sql = "UPDATE Customers SET profit = ? WHERE username = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, profit);
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();
-            System.out.println("DBG");
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    // Reads the minimum value for a customer to be a super
-    public int getMinToBeSuper(){
-        String sql = "SELECT * FROM Managers";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt  = conn.prepareStatement(sql)){
-            ResultSet rs  = pstmt.executeQuery();
-            while (rs.next()) {
-                System.out.println(rs.getInt("minToBeSuper"));
-                return rs.getInt("minToBeSuper");
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return -1;
-    }
-
-    // Updates the minimum value for a customer to be a super
-    public void updateMinToBeSuper(int min){
-        String sql = "UPDATE Managers SET minToBeSuper = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, min);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     // Returns all eligible supers
     public ArrayList <User> getEligibleSupers(){
         ArrayList<User> customers = new ArrayList<>();
         String sql = "SELECT * FROM EligibleSupers WHERE Approved = 0";
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt  = conn.prepareStatement(sql)){
             ResultSet rs  = pstmt.executeQuery();
@@ -752,6 +941,7 @@ public class SQL {
     public void approveSuperUser(User u){
         String username = u.getUsername();
         String sql = "UPDATE EligibleSupers SET Approved = 1 WHERE userName = ?";
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
@@ -765,6 +955,7 @@ public class SQL {
     // Checks to see if user is a super user
     public boolean isSuperAccount(String username){
         String sql = "SELECT * FROM EligibleSupers WHERE userName = ? and Approved = 1";
+
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
@@ -781,148 +972,21 @@ public class SQL {
         return false;
     }
 
-    public Double getStockPrice(String symbol){
-        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getDouble("priceCurrent");
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return -1.0;
-    }
+//    // Inserts a trade into db
+//    public void insertTrade(int stockID, int customerID) {
+//        String sql = "INSERT INTO Trades(stockID, customerID) VALUES(?,?)";
+//
+//        try (Connection conn = this.connect();
+//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setInt(1, stockID);
+//            pstmt.setInt(2, customerID);
+//            pstmt.executeUpdate();
+//        }
+//        catch (SQLException | ClassNotFoundException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
-    public ArrayList<Double> getStockHistory(String symbol) {
-        ArrayList<Double> history = new ArrayList<>();
-        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                history.add(rs.getDouble("price9"));
-                history.add(rs.getDouble("price8"));
-                history.add(rs.getDouble("price7"));
-                history.add(rs.getDouble("price6"));
-                history.add(rs.getDouble("price5"));
-                history.add(rs.getDouble("price4"));
-                history.add(rs.getDouble("price3"));
-                history.add(rs.getDouble("price2"));
-                history.add(rs.getDouble("price1"));
-                return history;
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return history;
-    }
 
-    public String getStockName(String symbol){
-        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("name");
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return "";
-    }
 
-    public double getStockTotalCost(String symbol, User u){
-        String username = u.getUsername();
-        String sql = "SELECT * FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ?";
-        double totalCost = 0.0;
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            pstmt.setString(2, username);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                totalCost += rs.getDouble("PurchasePrice");
-            }
-            return totalCost;
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return 0.0;
-    }
-
-    public int getQuantityStockOwned(String symbol, User u){
-        String username = u.getUsername();
-        String sql = "SELECT * FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ?";
-        int quantity = 0;
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            pstmt.setString(2, username);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                quantity += 1;
-            }
-            return quantity;
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return -1;
-    }
-    public void updateStockAvgCost(String symbol, User u){
-        String username = u.getUsername();
-        double totalCostStock = getStockTotalCost(symbol, u);
-        double avgCost = totalCostStock / getQuantityStockOwned(symbol, u);
-        String sql = "UPDATE OwnedStonks SET PurchasePrice = ? WHERE Symbol = ? and OwnerUsername = ?";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDouble(1, avgCost);
-            pstmt.setString(2, symbol);
-            pstmt.setString(3, username);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void removeStock(Stock s, User u){
-        String username = u.getUsername();
-        String symbol = s.getSymbol();
-//        String sql = "DELETE FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ?";
-        String sql = "DELETE FROM OwnedStonks WHERE rowid = (SELECT rowid FROM OwnedStonks WHERE Symbol = ? and OwnerUsername = ? LIMIT 1)";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, symbol);
-            pstmt.setString(2, username);
-            pstmt.executeUpdate();
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public boolean checkIfStocks(){
-        String sql = "SELECT * FROM Stocks";
-        try (Connection conn = this.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return true;
-            }
-        }
-        catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return false;
-    }
 }

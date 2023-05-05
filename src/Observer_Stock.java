@@ -1,10 +1,10 @@
 /*
- * Observer_User.java
+ * Observer_Stock.java
  * by Kevin Lin (lin2391@bu.edu)
- * 20APR2023
+ * 05MAY2023
  *
  * This interface is used to update listeners
- * when the user is updated
+ * when stocks are updated. Used for users and windows
  */
 
 public interface Observer_Stock {

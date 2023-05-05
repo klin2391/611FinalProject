@@ -1,13 +1,18 @@
+/*
+ * Window_ManagerUpdateStock.java
+ * by Ryan
+ * 23APR2023
+ *
+ * This is a window to update stock prices
+ */
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-
-
-
-public class Window_ManagerUpdateStock implements ActionListener {
-    private JFrame f;
+public class Window_ManagerUpdateStock extends JPanel implements ActionListener {
+//    private JFrame f;
+    private Window w;
     private Manager m;
     private JComboBox<String> cb_stocks;
     private JButton b_update;
@@ -19,9 +24,10 @@ public class Window_ManagerUpdateStock implements ActionListener {
     private SQL sql;
 
     // Constructor
-    public Window_ManagerUpdateStock(Manager m){
-        f = new JFrame("Update Stock Price");
-        this.m = m;
+    public Window_ManagerUpdateStock(Window w){
+//        f = new JFrame("Update Stock Price");
+        this.w = w;
+        this.m = Manager.getInstance();
         cb_stocks = new JComboBox<String>();
         
         for (int i = 0; i < m.getAvailableStocks().size(); i++){
@@ -37,25 +43,23 @@ public class Window_ManagerUpdateStock implements ActionListener {
         cb_stocks.addActionListener(this);
         b_update.addActionListener(this);
         b_updateAll.addActionListener(this);
-
         b_cancel.addActionListener(this);
 
         cb_stocks.setBounds(50, 50, 200, 30);
         tf_stockPrice.setBounds(50, 100, 200, 30);
         b_update.setBounds(50, 150, 200, 30);
         b_updateAll.setBounds(50, 250, 200, 30);
-
         b_cancel.setBounds(50, 300, 200, 30);
 
-        f.add(cb_stocks);
-        f.add(tf_stockPrice);
-        f.add(b_update);
-        f.add(b_updateAll);
-        f.add(b_cancel);
+        this.add(cb_stocks);
+        this.add(tf_stockPrice);
+        this.add(b_update);
+        this.add(b_updateAll);
+        this.add(b_cancel);
 
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
         sql = new SQL();
     }
 
@@ -73,24 +77,22 @@ public class Window_ManagerUpdateStock implements ActionListener {
             try {
                 stockPrice = Double.parseDouble(tf_stockPrice.getText());
             } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(f, "Please enter a valid price!");
+                JOptionPane.showMessageDialog(w.getFrame(), "Please enter a valid price!");
                 return;
             }
             m.updateStock(selectedStock,stockPrice);
-            JOptionPane.showMessageDialog(f, "Update "+selectedStock+ " price to " + String.valueOf(stockPrice) + " successfully!");
+            JOptionPane.showMessageDialog(w.getFrame(), "Update "+selectedStock+ " price to " + String.valueOf(stockPrice) + " successfully!");
             tf_stockPrice.setText("Stock Price");
             updateComboBox();
-
-            //f.dispose();
         }
         else if (e.getSource() == b_updateAll) {
             m.randomUpdateAll();
-            JOptionPane.showMessageDialog(f, "Update price of all stocks successfully!");
+            JOptionPane.showMessageDialog(w.getFrame(), "Update price of all stocks successfully!");
             updateComboBox();
         }
-
         else if (e.getSource() == b_cancel) {
-            f.dispose();
+            w.update(new Window_Manager(Manager.getInstance(), w));
+            w.setTitle("Manager");
         }
         else{
             JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed

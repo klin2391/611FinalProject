@@ -28,6 +28,17 @@ public class Grapher extends JPanel{
     // Constructor
     public Grapher(ArrayList <Double> yCoords, Double profit, boolean owned) {
         this.yCoords = yCoords;
+        if (yCoords.size() == 1){
+            for (int i = 0; i < 10; i++){
+                yCoords.add(i, 0.0);
+            }
+        }
+        if (owned){         // If the user owns the stock, we check if they made a profit
+            gain = profit >= 0;
+        }
+        else{               // If the user doesn't own the stock, we check if the stock is going up
+            gain = yCoords.get(yCoords.size()-1) > yCoords.get(yCoords.size()-2);
+        }
         max = yCoords.stream().max(Double::compareTo).get();        // We find the max value in the arraylist
         int maxInt = (int) (max / 10);
         max = (maxInt + 1) * 10.0;
@@ -39,12 +50,7 @@ public class Grapher extends JPanel{
         unitY = (int) ((endY - startY) / max);
         prevX = startX;
         prevY = (int) (endY - (yCoords.get(0) * unitY));
-        if (owned){
-            gain = profit >= 0;
-        }
-        else{
-            gain = yCoords.get(yCoords.size()-1) > yCoords.get(yCoords.size()-2);
-        }
+
     }
 
     @Override

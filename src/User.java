@@ -5,8 +5,7 @@
  * 
  * This class is a tentative draft at creating a user.
  * Has name, password, username, balance and owned stonks
- * 
- * TODO: Listener for stocks when updated
+ *
  */
 
 import java.math.BigDecimal;
@@ -38,10 +37,12 @@ public class User extends Person implements User_Account, Observer_Stock{
         windows = new ArrayList<Observer_User>();
         sql = new SQL();
     }
+
     //for pending customers
     public User(String first, String last, String email, String username, String password){
         this(first, last, email, username, password, 0, 0);
     }
+
     // Constructor with values
     public User(String firstName, String lastName, String email, String username, String password, double balance,double profit) {
         this.firstName = firstName;
@@ -57,31 +58,11 @@ public class User extends Person implements User_Account, Observer_Stock{
         sql = new SQL();
     }
 
-    public void setUnrealizedProfit(){ //calculate the unrealized profit when needed
-        double purchasePrice = 0;
-        for (String symbol : portfolio.keySet()) { // calculate the purchase price for all stocks a user has
-            for (Stock stock : portfolio.get(symbol)) {
-                BigDecimal b1 = new BigDecimal(purchasePrice);
-                BigDecimal b2 = new BigDecimal(stock.getPurchasePrice());
-                purchasePrice = b1.add(b2).doubleValue();
-            }
-        }
-
-        this.unrealizedProfit = new Double(Math.round(  (getStockValue() - purchasePrice)*100))/100;
-
-        //this.unrealizedProfit = getStockValue() - purchasePrice;
-    }
-
-
-    public void setPortfolio(HashMap <String, ArrayList<Stock>> portfolio){
-        this.portfolio = portfolio;
-    }
-
+    // Accessors
     public double getUnrealizedProfit(){
         return this.unrealizedProfit;
     }
 
-    // Accessor methods
     public String getFirstName() {
         return firstName;
     }
@@ -113,10 +94,11 @@ public class User extends Person implements User_Account, Observer_Stock{
         return balance + getStockValue();
     }
 
+    // Returns hash map of all owned stocks sorted by symbol
     public HashMap <String, ArrayList<Stock>> getPortfolio() {
         return portfolio;
     }
-
+    // Returns arraylist of all owned stocks of a certain symbol
     public ArrayList<Stock> getStock(String symbol) {
         return portfolio.get(symbol);
     }
@@ -126,13 +108,6 @@ public class User extends Person implements User_Account, Observer_Stock{
     }
 
     // Mutator methods
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public void addBalance(double deposit) {
         this.balance += deposit;
@@ -145,7 +120,7 @@ public class User extends Person implements User_Account, Observer_Stock{
     }
 
     public void addStock(Stock stock) {
-        sql.insertOwnedStock(stock, this);
+        sql.insertOwnedStock(stock, this);              // updates db
         if (portfolio.containsKey(stock.getSymbol())) {     // If owned, adds to appropriate arraylist
             portfolio.get(stock.getSymbol()).add(stock);
         }
@@ -166,8 +141,25 @@ public class User extends Person implements User_Account, Observer_Stock{
         messageToUser = message;
     }
 
-    
+    //calculate the unrealized profit when needed
+    public void setUnrealizedProfit(){
+        double purchasePrice = 0;
+        for (String symbol : portfolio.keySet()) { // calculate the purchase price for all stocks a user has
+            for (Stock stock : portfolio.get(symbol)) {
+                BigDecimal b1 = new BigDecimal(purchasePrice);
+                BigDecimal b2 = new BigDecimal(stock.getPurchasePrice());
+                purchasePrice = b1.add(b2).doubleValue();
+            }
+        }
+        this.unrealizedProfit = new Double(Math.round(  (getStockValue() - purchasePrice)*100))/100;
+    }
+
+    public void setPortfolio(HashMap <String, ArrayList<Stock>> portfolio){
+        this.portfolio = portfolio;
+    }
+
     // Observer methods
+    // For those listening to this user
     public void addWindow(Observer_User window) {
         windows.add(window);
     }
@@ -176,33 +168,31 @@ public class User extends Person implements User_Account, Observer_Stock{
         windows.remove(window);
     }
 
+    // Updates stocks in all windows
     public void updateStocks(ArrayList<Stock> stocks) {
-        System.out.println("DBG User.updateStocks()");
         for (Stock stock : stocks) {
             if (portfolio.containsKey(stock.getSymbol())) {
-                System.out.println("DBG User.updateStocks() - " + stock.getSymbol());
-                System.out.println("DBG User.updateStocks() - " + portfolio.get(stock.getSymbol()).size());
-                System.out.println("DBG User.updateStocks() - " + stock.getHistory());
                 for (Stock ownedStock : portfolio.get(stock.getSymbol())) {
                     ownedStock.updatePrice(stocks);
-                    System.out.println(ownedStock.getHistory());
                 }
             }
         }
         updateWindows();
     }
 
+    // Updates based on stock changes
     public void update(){
-        // DO the actual updating
         updateStocks(sql.getAllStocks());
         setUnrealizedProfit();
         updateWindows();
     }
 
+    // Registers to a changing manager
     public void register(Manager m){
         m.addObs(this);
     }
 
+    // Updates all windows
     public void updateWindows() {
         for (Observer_User window : windows) {
             if (window != null)
@@ -210,49 +200,24 @@ public class User extends Person implements User_Account, Observer_Stock{
         }
     }
 
-    // Buy a stock.  Returns 1 if successful, -1 if not successful
-//    public int buyStock(Stock stock, int quantity) {
-//        if (balance >= stock.getCurrentPrice() * quantity) {
-//            for (int i = 0; i < quantity; i++) {
-//                stock.setPurchasePrice(stock.getCurrentPrice());
-//                addStock(stock);
-//            }
-//            subtractBalance(stock.getCurrentPrice() * quantity);
-//            messageToUser = "You have successfully bought " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
-//            updateWindows();
-//            return 1;
-//        }
-//        else {
-//            messageToUser = "You do not have enough money to buy " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
-//            return -1;
-//        }
-//    }
-
-        public int buyStock(Stock stock, int quantity) {
-            if (balance >= stock.getCurrentPrice() * quantity) {
-//                for (int i = 0; i < quantity; i++) {
-//                    stock.setPurchasePrice(stock.getCurrentPrice());
-//                    addStock(stock);
-//                }
-                double totalCostStock = sql.getStockTotalCost(stock.getSymbol(), this);
-                System.out.println("totalCostStock: " + totalCostStock);
-                for (int i = 0; i < quantity; i++){
-                    stock.setPurchasePrice(stock.getCurrentPrice());
-                    addStock(stock);
-                    totalCostStock += stock.getCurrentPrice();
-                    System.out.println("totalCostStock: " + totalCostStock);
-                }
-                sql.updateStockAvgCost(stock.getSymbol(), this);
-                subtractBalance(stock.getCurrentPrice() * quantity);
-                messageToUser = "You have successfully bought " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
-                updateWindows();
-                return 1;
+    // Buy a stcok. Returns 1 if successful, -1 if not enough money
+    public int buyStock(Stock stock, int quantity) {
+        if (balance >= stock.getCurrentPrice() * quantity) {
+            for (int i = 0; i < quantity; i++){
+                stock.setPurchasePrice(stock.getCurrentPrice());
+                addStock(stock);                                        // Adds to db
             }
-            else {
-                messageToUser = "You do not have enough money to buy " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
-                return -1;
-            }
+            sql.updateStockAvgCost(stock.getSymbol(), this);        // changes avg cost in db
+            subtractBalance(stock.getCurrentPrice() * quantity);
+            messageToUser = "You have successfully bought " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
+            updateWindows();
+            return 1;
         }
+        else {
+            messageToUser = "You do not have enough money to buy " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
+            return -1;
+        }
+    }
 
     // Sell a stock. Returns 1 if successful, -1 if not successful
     public int sellStock(Stock stock, int quantity) {
@@ -261,20 +226,18 @@ public class User extends Person implements User_Account, Observer_Stock{
                 for (int i = 0; i < quantity; i++) {
                     int prior = (int) this.profit;
                     profit += stock.getCurrentPrice() - portfolio.get(stock.getSymbol()).get(0).getPurchasePrice();
-                    portfolio.get(stock.getSymbol()).remove(0);
+                    portfolio.get(stock.getSymbol()).remove(0); // removes from arraylist
                     profit = new Double(Math.round(profit*100))/100;
-                    System.out.println(profit);
-                    sql.updateProfit(this.username, (int) this.profit);                 // updates db
-                    System.out.println("db updated");
-                    sql.removeStock(stock, this);
+                    sql.updateProfit(this.username, (int) this.profit);                 // updates db profit
+                    sql.removeStock(stock, this);                                   // updates db removes stock
                     if (prior < sql.getMinToBeSuper() && this.profit >= sql.getMinToBeSuper() && !sql.isEligibleToBeSuper(this)) {      // Checks to see if just crossed threshold
-                        sql.addEligible(this);
+                        sql.addEligible(this);                                      // Can be super
                     }
                 }
                 if (portfolio.get(stock.getSymbol()).size() == 0) { // if they sold last one
                     portfolio.remove(stock.getSymbol());
                 }
-                addBalance(stock.getCurrentPrice() * quantity);
+                addBalance(stock.getCurrentPrice() * quantity); // Changes cash balance
                 messageToUser = "You have successfully sold " + quantity + " shares of " + stock.getName() + " (" + stock.getSymbol() + ") at $" + stock.getCurrentPrice() + " per share.";
                 updateWindows();
                 return 1;       //success

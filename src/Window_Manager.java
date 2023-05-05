@@ -10,8 +10,9 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.event.*;
 
-public class Window_Manager implements ActionListener{
-    private JFrame f;
+public class Window_Manager extends JPanel implements ActionListener{
+//    private JFrame f;
+    private Window w;
     private Manager m;
     private JLabel l_welcome;
     private JButton b_approve;
@@ -24,12 +25,10 @@ public class Window_Manager implements ActionListener{
     private JButton b_logout;
 
     // Constructor
-
-    public Window_Manager(Manager m){
-        f = new JFrame("Manager");
+    public Window_Manager(Manager m, Window w){
+//        f = new JFrame("Manager");
+        this.w = w;
         this.m = m;
-        System.out.println(m.getObs().size());
-        System.out.println(this.m.getObs().size());
         l_welcome = new JLabel("Welcome, " + m.getUsername() + "!");
         b_approve = new JButton("Approve/Reject");
         b_viewUsers = new JButton("View Users");
@@ -37,7 +36,6 @@ public class Window_Manager implements ActionListener{
         b_removeStock = new JButton("Remove Stock");
         b_updateStockPrice = new JButton("Update Stock Price");
         b_trackProfit = new JButton("Track Profit");
-
         b_settings = new JButton("Settings");
         b_logout = new JButton("Logout");
 
@@ -60,51 +58,50 @@ public class Window_Manager implements ActionListener{
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
 
-        f.add(l_welcome);
-        f.add(b_approve);
-        f.add(b_viewUsers);
-        f.add(b_addStock);
-        f.add(b_removeStock);
-        f.add(b_updateStockPrice);
-        f.add(b_trackProfit);
-        f.add(b_settings);
-        f.add(b_logout);
+        this.add(l_welcome);
+        this.add(b_approve);
+        this.add(b_viewUsers);
+        this.add(b_addStock);
+        this.add(b_removeStock);
+        this.add(b_updateStockPrice);
+        this.add(b_trackProfit);
+        this.add(b_settings);
+        this.add(b_logout);
 
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == b_approve) {
-            new Window_ManagerApprove(m);
+            w.update(new Window_ManagerApprove(w));
+            w.setTitle("Approve/Reject Users");
         }
         else if (e.getSource() == b_viewUsers) {
-            new Window_ManagerUsers(m);
+            w.update(new Window_ManagerUsers(w));
+            w.setTitle("View Users");
         }
         else if (e.getSource() == b_addStock) {
-        //    System.out.println("Add Stock");
-            new Window_ManagerAddStock(m);
-
+            w.update(new Window_ManagerAddStock(w));
+            w.setTitle("Add Stock");
         }
         else if (e.getSource() == b_removeStock) {
-            System.out.println("Remove Stock from Market");
-            new Window_ManagerRemoveStock(m);
+            w.update(new Window_ManagerRemoveStock(w));
+            w.setTitle("Remove Stock");
         }
         else if (e.getSource() == b_updateStockPrice) {
-            System.out.println("Update Stock Price");
-            new Window_ManagerUpdateStock(m);
+            w.update(new Window_ManagerUpdateStock(w));
+            w.setTitle("Update Stock Price");
         }
         else if (e.getSource() == b_trackProfit) { // show the table of profit of all users
-            new Window_ManagerProfitTable(m);
+            new Window_ManagerProfitTable();
         }
         else if (e.getSource() == b_settings) {
             new Window_Settings(m);
         }
         else if (e.getSource() == b_logout) {
-//            new Window_Root();
-            f.dispose();
+            w.dispose();
         }
     }
-
 }
