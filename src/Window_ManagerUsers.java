@@ -10,8 +10,9 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Window_ManagerUsers implements ActionListener{
-    private JFrame f;
+public class Window_ManagerUsers extends JPanel implements ActionListener{
+//    private JFrame f;
+    private Window w;
     private Manager m;
     private JLabel l_welcome;
     private JComboBox cb_users;
@@ -28,8 +29,9 @@ public class Window_ManagerUsers implements ActionListener{
     private JComboBox <String> cb_eligible;
     private SQL sql;
 
-    public Window_ManagerUsers(){
-        f = new JFrame("Manager");
+    public Window_ManagerUsers(Window w){
+//        f = new JFrame("Manager");
+        this.w = w;
         this.m = Manager.getInstance();
         l_welcome = new JLabel("Welcome, " + m.getUsername() + "!");
         cb_users = new JComboBox<String>();
@@ -77,55 +79,63 @@ public class Window_ManagerUsers implements ActionListener{
         b_notifyAll.setBounds(50, 550, 200, 30);
         b_cancel.setBounds(50, 600, 200, 30);
 
-        f.add(l_welcome);
-        f.add(cb_users);
-        f.add(b_view);
-        f.add(b_block);
-        f.add(cb_blocked);
-        f.add(b_unblock);
-        f.add(b_unblockAll);
-        f.add(tf_notify);
-        f.add(b_update);
-        f.add(cb_eligible);
-        f.add(b_notify);
-        f.add(b_notifyAll);
-        f.add(b_cancel);
+        this.add(l_welcome);
+        this.add(cb_users);
+        this.add(b_view);
+        this.add(b_block);
+        this.add(cb_blocked);
+        this.add(b_unblock);
+        this.add(b_unblockAll);
+        this.add(tf_notify);
+        this.add(b_update);
+        this.add(cb_eligible);
+        this.add(b_notify);
+        this.add(b_notifyAll);
+        this.add(b_cancel);
 
-        f.setSize(500, 800);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.setSize(500, 800);
+        this.setLayout(null);
+        this.setVisible(true);
         sql = new SQL();
     }
     public void actionPerformed(ActionEvent e) {
         String s = "Hello! We are pleased to inform you that your account has been upgraded to allow trading options!";
         if (e.getSource() == b_view) {                  // View user
-            new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1);
+            w.update(new Window_User(m.getApprovedUsers().get(cb_users.getSelectedIndex()),1, w));
+            w.setTitle(m.getApprovedUsers().get(cb_users.getSelectedIndex()).getUsername());
         }
         else if (e.getSource() == b_block) {            // Block user
             User u = sql.getUser((String)cb_users.getSelectedItem());
             sql.blockUser(u);
             update_frame();
-            JOptionPane.showMessageDialog(null, u.getUsername() + " has been blocked.");
+            JOptionPane.showMessageDialog(w.getFrame(), u.getUsername() + " has been blocked.");
         }
         else if (e.getSource() == b_unblock) {          // Unblock user
             User u = sql.getUser((String)cb_blocked.getSelectedItem());
             sql.unblockUser(u);
             update_frame();
-            JOptionPane.showMessageDialog(null, u.getUsername() + " has been unblocked.");
+            JOptionPane.showMessageDialog(w.getFrame(), u.getUsername() + " has been unblocked.");
         }
         else if (e.getSource() == b_unblockAll) {        // Unblock all users
             sql.unblockAllUsers();
             update_frame();
-            JOptionPane.showMessageDialog(null, "All users have been unblocked.");
+            JOptionPane.showMessageDialog(w.getFrame(), "All users have been unblocked.");
         }
         else if (e.getSource() == b_update) {             // Update minimum balance
             if (tf_notify.getText().isEmpty()){
                 return;
             }
             else{
-                int val = Integer.parseInt(tf_notify.getText());
-                sql.updateMinToBeSuper(val);
-                JOptionPane.showMessageDialog(null, "Minimum balance to be a super user has been updated to " + val);
+                try{
+                    double val = Double.parseDouble(tf_notify.getText());
+                    sql.updateMinToBeSuper(val);
+                    JOptionPane.showMessageDialog(w.getFrame(), "Minimum balance to be a super user has been updated to " + val);
+                }
+                catch(NumberFormatException nfe){
+                    JOptionPane.showMessageDialog(w.getFrame(), "Please enter a valid number.");
+                    return;
+                }
+
             }
         }
         else if (e.getSource() == b_notify) {               // Notify user
@@ -141,12 +151,12 @@ public class Window_ManagerUsers implements ActionListener{
             }
         }
         else if (e.getSource() == b_cancel) {
-            f.dispose();
+            w.update(new Window_Manager(Manager.getInstance(), w));
+            w.setTitle("Manager");
         }
     }
 
     public void update_frame(){
-        f.dispose();
-        new Window_ManagerUsers();
+        w.update(new Window_ManagerUsers(w));
     }
 }

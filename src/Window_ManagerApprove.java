@@ -9,8 +9,9 @@
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Window_ManagerApprove implements ActionListener{
-    private JFrame f;
+public class Window_ManagerApprove extends JPanel implements ActionListener{
+//    private JFrame f;
+    private Window w;
     private Manager m;
     private JComboBox<String> cb_users;
     private JButton b_approve;
@@ -22,8 +23,9 @@ public class Window_ManagerApprove implements ActionListener{
     private SQL sql;
 
     // Constructor
-    public Window_ManagerApprove(){
-        f = new JFrame("Approve Users");
+    public Window_ManagerApprove(Window w){
+//        f = new JFrame("Approve Users");
+        this.w = w;
         this.m = Manager.getInstance();
         cb_users = new JComboBox<String>();
         for (int i = 0; i < m.getPendingApproval().size(); i++){
@@ -49,16 +51,16 @@ public class Window_ManagerApprove implements ActionListener{
         b_rejectAll.setBounds(50, 250, 200, 30);
         b_cancel.setBounds(50, 300, 200, 30);
 
-        f.add(cb_users);
-        f.add(b_approve);
-        f.add(b_approveAll);
-        f.add(b_reject);
-        f.add(b_rejectAll);
-        f.add(b_cancel);
+        this.add(cb_users);
+        this.add(b_approve);
+        this.add(b_approveAll);
+        this.add(b_reject);
+        this.add(b_rejectAll);
+        this.add(b_cancel);
 
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
         sql = new SQL();
     }
 
@@ -97,7 +99,8 @@ public class Window_ManagerApprove implements ActionListener{
             }
         }
         else if (e.getSource() == b_cancel) {
-            f.dispose();
+            w.update(new Window_Manager(Manager.getInstance(), w));
+            w.setTitle("Manager");
         }
         else{
             JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed

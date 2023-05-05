@@ -16,8 +16,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 
-public class Window_User implements ActionListener, Observer_User{
-    private JFrame f;                           // Frame
+public class Window_User extends JPanel implements ActionListener, Observer_User{
+//    private JFrame f;                           // Frame
+    private Window w;
     private User user;                          // User profile
     private JLabel l_nameFirst;
     private JLabel l_nameLast;
@@ -35,10 +36,11 @@ public class Window_User implements ActionListener, Observer_User{
 
 
     // Constructor that takes a user
-    public Window_User(User u, int caller){         // Caller is 0 if called from login, 1 if called from manager
+    public Window_User(User u, int caller, Window w){         // Caller is 0 if called from login, 1 if called from manager
         this.user = u;                                      // Sets user
         register(user);
-        f = new JFrame(u.getUsername());
+//        f = new JFrame(u.getUsername());
+        this.w = w;
         l_nameFirst = new JLabel("First Name: " + u.getFirstName());
         l_nameLast = new JLabel("Last Name: " + u.getLastName());
         l_cashBuyPower = new JLabel("Cash Buying Power: " + u.getBalance());
@@ -76,7 +78,7 @@ public class Window_User implements ActionListener, Observer_User{
         b_settings.setBounds(50, 450, 200, 30);
         b_logout.setBounds(50, 400, 200, 30);
 
-        f.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
         p_north = new JPanel();
         p_north.add(l_nameFirst);
         p_north.add(l_nameLast);
@@ -95,12 +97,12 @@ public class Window_User implements ActionListener, Observer_User{
         else if (caller == 1){                              // If called from settings
             p_south.add(b_logout);
         }
-
-        f.add(p_north, BorderLayout.NORTH);
-        f.add(p_center, BorderLayout.CENTER);
-        f.add(p_south, BorderLayout.SOUTH);
-        f.setSize(800, 800);
-        f.setVisible(true);
+        System.out.println(caller);
+        this.add(p_north, BorderLayout.NORTH);
+        this.add(p_center, BorderLayout.CENTER);
+        this.add(p_south, BorderLayout.SOUTH);
+        this.setSize(600, 600);
+        this.setVisible(true);
     }
 
     // Implements action performed interface for user interaction
@@ -108,31 +110,32 @@ public class Window_User implements ActionListener, Observer_User{
         SQL sql = new SQL();
         if (e.getSource() == b_depositWithdraw){     // If button to deposit is clicked
             if (sql.checkIfUserBlacklisted(user.getUsername())){
-                JOptionPane.showMessageDialog(null, "You are blacklisted from the system. Please contact an administrator.");
+                JOptionPane.showMessageDialog(w.getFrame(), "You are blacklisted from the system. Please contact an administrator.");
                 return;
             }
-            Window_Funds wf = new Window_Funds(user, this);
+            w.update(new Window_Funds(user, this,w));
+            w.setTitle("Deposit/Withdraw Funds");
             return;
         }
         else if (e.getSource() == b_buySell){            // If button to buy is clicked
             if (sql.checkIfUserBlacklisted(user.getUsername())){
-                JOptionPane.showMessageDialog(null, "You are blacklisted from the system. Please contact an administrator.");
+                JOptionPane.showMessageDialog(w.getFrame(), "You are blacklisted from the system. Please contact an administrator.");
                 return;
             }
             if (!sql.checkIfStocks()){
-                JOptionPane.showMessageDialog(null, "There are no stocks in the system. Please contact an administrator.");
+                JOptionPane.showMessageDialog(w.getFrame(), "There are no stocks in the system. Please contact an administrator.");
                 return;
             }
-            Window_Trade wbs = new Window_Trade(user.getPortfolio(), sql.getAllAvailableStocks(), user);
+            w.update(new Window_Trade(user.getPortfolio(), sql.getAllAvailableStocks(), user, w));
+            w.setTitle("Trade Stocks");
             return;
         }
         else if (e.getSource() == b_settings){           // If button to settings is clicked
-            Window_Settings ws = new Window_Settings(user);
+            new Window_Settings(user);
             return;
         }
         else if (e.getSource() == b_logout){             // If button to logout is clicked
-            new Window_Root();
-//            f.dispose();
+            w.dispose();
             return;
         }
 

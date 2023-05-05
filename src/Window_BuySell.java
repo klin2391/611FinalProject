@@ -11,8 +11,9 @@
  import java.awt.BorderLayout;
  import java.awt.event.*;
 
- public class Window_BuySell implements ActionListener{
-    private JFrame f;
+ public class Window_BuySell extends JPanel implements ActionListener{
+//    private JFrame f;
+     private Window w;
     private Stock selectedStock = null;
     private JComboBox <String> cb_stocks;
     private JLabel l_currentVal;
@@ -24,10 +25,11 @@
     private TradeBehavior action;
 
     // Default Constructor
-    public Window_BuySell(ArrayList <Stock> s, User u, TradeBehavior a){
+    public Window_BuySell(ArrayList <Stock> s, User u, TradeBehavior a, Window w){
         this.user = u;
         this.action = a;        // buy or sell
-        f = new JFrame(a.getName());
+//        f = new JFrame(a.getName());
+        this.w = w;
         cb_stocks = new JComboBox <String>();
         cb_stocks.addItem("Select a Stock to " + a.getName().toLowerCase());
         if (a.getName() == "Sell"){
@@ -55,34 +57,36 @@
         tf_numStocks.setBounds(50, 200, 200, 30);
         b_action.setBounds(50, 250, 200, 30);
         b_cancel.setBounds(50, 300, 200, 30);
-        f.add(cb_stocks);
-        f.add(l_currentVal);
-        f.add(l_numOwned);
-        f.add(tf_numStocks);
-        f.add(b_action);
-        f.add(b_cancel);
-        
-        f.setSize(800, 800);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(cb_stocks);
+        this.add(l_currentVal);
+        this.add(l_numOwned);
+        this.add(tf_numStocks);
+        this.add(b_action);
+        this.add(b_cancel);
+
+        this.setSize(800, 800);
+        this.setLayout(null);
+        this.setVisible(true);
         
     }
     // Action Listener for the JComboBox
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_action ){
             if (tf_numStocks.getText().isEmpty()|| selectedStock == null){
-                JOptionPane.showMessageDialog(f, "Please select a stock and enter a number to " + action.getName().toLowerCase());
+                JOptionPane.showMessageDialog(w.getFrame(), "Please select a stock and enter a number to " + action.getName().toLowerCase());
                 return;
             }
             int numStocks = Integer.parseInt(tf_numStocks.getText());
             if (action.execute(user, selectedStock, numStocks) < 0){        // fail
-                JOptionPane.showMessageDialog(f, "Insufficient Resources!");
+                JOptionPane.showMessageDialog(w.getFrame(), "Insufficient Resources!");
                 return;
             }
-            f.dispose();
+            w.update(new Window_User(user, 0, w));
+            w.setTitle(user.getUsername());
         }
         else if (e.getSource() == b_cancel){
-            f.dispose();
+            w.update(new Window_User(user, 0, w));
+            w.setTitle(user.getUsername());
         }
         else{
             JComboBox cb = (JComboBox)e.getSource();

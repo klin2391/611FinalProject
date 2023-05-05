@@ -10,8 +10,9 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.event.*;
 
-public class Window_Manager implements ActionListener{
-    private JFrame f;
+public class Window_Manager extends JPanel implements ActionListener{
+//    private JFrame f;
+    private Window w;
     private Manager m;
     private JLabel l_welcome;
     private JButton b_approve;
@@ -24,8 +25,9 @@ public class Window_Manager implements ActionListener{
     private JButton b_logout;
 
     // Constructor
-    public Window_Manager(Manager m){
-        f = new JFrame("Manager");
+    public Window_Manager(Manager m, Window w){
+//        f = new JFrame("Manager");
+        this.w = w;
         this.m = m;
         l_welcome = new JLabel("Welcome, " + m.getUsername() + "!");
         b_approve = new JButton("Approve/Reject");
@@ -56,36 +58,41 @@ public class Window_Manager implements ActionListener{
         b_settings.addActionListener(this);
         b_logout.addActionListener(this);
 
-        f.add(l_welcome);
-        f.add(b_approve);
-        f.add(b_viewUsers);
-        f.add(b_addStock);
-        f.add(b_removeStock);
-        f.add(b_updateStockPrice);
-        f.add(b_trackProfit);
-        f.add(b_settings);
-        f.add(b_logout);
+        this.add(l_welcome);
+        this.add(b_approve);
+        this.add(b_viewUsers);
+        this.add(b_addStock);
+        this.add(b_removeStock);
+        this.add(b_updateStockPrice);
+        this.add(b_trackProfit);
+        this.add(b_settings);
+        this.add(b_logout);
 
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == b_approve) {
-            new Window_ManagerApprove();
+            w.update(new Window_ManagerApprove(w));
+            w.setTitle("Approve/Reject Users");
         }
         else if (e.getSource() == b_viewUsers) {
-            new Window_ManagerUsers();
+            w.update(new Window_ManagerUsers(w));
+            w.setTitle("View Users");
         }
         else if (e.getSource() == b_addStock) {
-            new Window_ManagerAddStock();
+            w.update(new Window_ManagerAddStock(w));
+            w.setTitle("Add Stock");
         }
         else if (e.getSource() == b_removeStock) {
-            new Window_ManagerRemoveStock();
+            w.update(new Window_ManagerRemoveStock(w));
+            w.setTitle("Remove Stock");
         }
         else if (e.getSource() == b_updateStockPrice) {
-            new Window_ManagerUpdateStock();
+            w.update(new Window_ManagerUpdateStock(w));
+            w.setTitle("Update Stock Price");
         }
         else if (e.getSource() == b_trackProfit) { // show the table of profit of all users
             new Window_ManagerProfitTable();
@@ -94,8 +101,7 @@ public class Window_Manager implements ActionListener{
             new Window_Settings(m);
         }
         else if (e.getSource() == b_logout) {
-            f.dispose();
+            w.dispose();
         }
     }
-
 }

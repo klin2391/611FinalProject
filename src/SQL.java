@@ -412,12 +412,12 @@ public class SQL {
     }
 
     // Updates the minimum value for a customer to be a super
-    public void updateMinToBeSuper(int min){
+    public void updateMinToBeSuper(double min){
         String sql = "UPDATE Managers SET minToBeSuper = ?";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, min);
+            pstmt.setDouble(1, min);
             pstmt.executeUpdate();
         }
         catch (SQLException | ClassNotFoundException e) {

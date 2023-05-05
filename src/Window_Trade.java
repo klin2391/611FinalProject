@@ -12,8 +12,9 @@ import java.awt.BorderLayout;
 import java.awt.event.*;
 
 
-public class Window_Trade implements ActionListener, Observer_User, Observer_Stock{
-    private JFrame f;
+public class Window_Trade extends JPanel implements ActionListener, Observer_User, Observer_Stock{
+//    private JFrame f;
+    private Window w;
     private HashMap <String, ArrayList<Stock>> myStocks;
     private ArrayList <Stock> worldStocks;
     private JLabel l_browse;
@@ -26,14 +27,15 @@ public class Window_Trade implements ActionListener, Observer_User, Observer_Sto
     private User user;
 
     // Default Constructor
-    public Window_Trade(HashMap <String, ArrayList<Stock>> mine, ArrayList <Stock> world, User u){
+    public Window_Trade(HashMap <String, ArrayList<Stock>> mine, ArrayList <Stock> world, User u, Window w){
         this.user = u;
         register(user);
         register(Manager.getInstance());
         this.myStocks = mine;
         this.worldStocks = world;
 
-        f = new JFrame("Trade");
+//        f = new JFrame("Trade");
+        this.w = w;
         l_browse = new JLabel("Browse Stocks");
         l_owned = new JLabel("My Stocks");
         cb_allStocks = new JComboBox <String>();
@@ -64,17 +66,17 @@ public class Window_Trade implements ActionListener, Observer_User, Observer_Sto
         b_sell.setBounds(50, 350, 200, 30);
         b_cancel.setBounds(50, 400, 200, 30);
 
-        f.add(l_browse);
-        f.add(l_owned);
-        f.add(cb_allStocks);
-        f.add(cb_stocksOwned);
-        f.add(b_buy);
-        f.add(b_sell);
-        f.add(b_cancel);
-        
-        f.setSize(800, 800);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(l_browse);
+        this.add(l_owned);
+        this.add(cb_allStocks);
+        this.add(cb_stocksOwned);
+        this.add(b_buy);
+        this.add(b_sell);
+        this.add(b_cancel);
+
+        this.setSize(800, 800);
+        this.setLayout(null);
+        this.setVisible(true);
     }
     
 
@@ -102,14 +104,17 @@ public class Window_Trade implements ActionListener, Observer_User, Observer_Sto
         }
         else if (e.getSource() == b_buy){
             TradeBehavior tb = new TradeBehavior_Buy();
-            Window_BuySell wbs = new Window_BuySell(worldStocks, user, tb );
+            w.update(new Window_BuySell(worldStocks, user, tb, w));
+            w.setTitle("Buy");
         }
         else if (e.getSource() == b_sell){
             TradeBehavior tb = new TradeBehavior_Sell();
-            Window_BuySell wss = new Window_BuySell(worldStocks, user, tb);
+            w.update(new Window_BuySell(worldStocks, user, tb,w));
+            w.setTitle("Sell");
         }
         else if (e.getSource() == b_cancel){
-            f.dispose();
+            w.update(new Window_User(user, 0, w));
+            w.setTitle(user.getUsername());
         }
     
     }
@@ -123,7 +128,6 @@ public class Window_Trade implements ActionListener, Observer_User, Observer_Sto
         myStocks.forEach((k, v) -> {
             cb_stocksOwned.addItem(k);
         });
-//        f.dispose();
     }
 
     public void register(User u){

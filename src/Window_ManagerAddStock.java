@@ -10,7 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class Window_ManagerAddStock extends JPanel implements ActionListener {
-    private JFrame f;                           // Frame
+//    private JFrame f;                           // Frame
+    private Window w;
     private JLabel l_addStock;
     private JTextField tf_stockName;
     private JTextField tf_stockPrice;
@@ -25,10 +26,10 @@ public class Window_ManagerAddStock extends JPanel implements ActionListener {
     private JPanel p;
 
     // Constructor
-    public Window_ManagerAddStock(){
+    public Window_ManagerAddStock(Window w){
         this.manager = Manager.getInstance();
-
-        f = new JFrame("Login");
+//        f = new JFrame("Login");
+        this.w = w;
         p = new JPanel();
         l_addStock = new JLabel("Add stock!");
         tf_stockName = new JTextField("Stock Name");
@@ -55,10 +56,10 @@ public class Window_ManagerAddStock extends JPanel implements ActionListener {
         p.setSize(500, 500);
         p.setLayout(null);
         p.setVisible(true);
-        f.add(p);
-        f.setSize(500, 500);
-        f.setLayout(null);
-        f.setVisible(true);
+        this.add(p);
+        this.setSize(500, 500);
+        this.setLayout(null);
+        this.setVisible(true);
         sql = new SQL();
     }
 
@@ -66,16 +67,22 @@ public class Window_ManagerAddStock extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == b_add){     // if the login button is pressed
             stockName = tf_stockName.getText();
-            stockPrice = Double.valueOf(tf_stockPrice.getText());
+            try{
+                stockPrice = Double.valueOf(tf_stockPrice.getText());
+            }
+            catch(NumberFormatException nfe){
+                JOptionPane.showMessageDialog(w.getFrame(), "Please enter a valid price.");
+                return;
+            }
             stockSymbol = tf_stockSymbol.getText();
-//            sql.insertStock(sql.getNextID("Stocks"), stockName, stockPrice, stockSymbol);
             manager.addStock(stockName, stockPrice, stockSymbol);
-            JOptionPane.showMessageDialog(f, "Added the stock successfully!");
-            f.dispose();
+            JOptionPane.showMessageDialog(w.getFrame(), "Added the stock successfully!");
+            w.update(new Window_Manager(Manager.getInstance(), w));
+            w.setTitle("Manager");
         }
         else if(e.getSource() == b_back){
-            new Window_Manager(manager);
-            f.dispose();
+            w.update(new Window_Manager(Manager.getInstance(), w));
+            w.setTitle("Manager");
         }
     }
 

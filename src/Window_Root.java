@@ -84,16 +84,19 @@ public class Window_Root extends JFrame implements ActionListener  {
 
     public void actionPerformed(ActionEvent e){
         if (e.getSource() == b_createAccount){
-            Window w = new Window("Stock Market", 800, 600);
+            Window w = new Window("Stock Market", 800, 700);
             Window_Apply wa = new Window_Apply(w);
             w.update(wa);
+            w.setTitle("Apply Now");
 //            f.dispose();
         }
         else if (e.getSource() == b_login){
 
             //new Window_Login();
-
-            new Window_Login();
+            Window w = new Window("Stock Market", 800, 700);
+            Window_Login wl = new Window_Login(w);
+            w.update(wl);
+            w.setTitle("Login");
 
 //            f.dispose();
         }

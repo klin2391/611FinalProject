@@ -21,7 +21,7 @@ public class Window_Apply extends JPanel implements ActionListener {
     private JPasswordField pf_password;
     private JPasswordField pf_confirmPassword;
     private JButton b_apply;
-    private JButton b_back;
+    private JButton b_close;
     private String firstName;
     private String lastName;
     private String email;
@@ -43,7 +43,7 @@ public class Window_Apply extends JPanel implements ActionListener {
         pf_password = new JPasswordField("Password");
         pf_confirmPassword = new JPasswordField("Password");
         b_apply = new JButton("Apply");
-        b_back = new JButton("Back");
+        b_close = new JButton("Close");
 
         l_applyNow.setBounds(50, 50, 200, 30);
         tf_firstName.setBounds(50, 100, 200, 30);
@@ -54,8 +54,8 @@ public class Window_Apply extends JPanel implements ActionListener {
         pf_confirmPassword.setBounds(50, 350, 200, 30);
         b_apply.setBounds(50, 400, 200, 30);
         b_apply.addActionListener(this);
-        b_back.setBounds(50, 450, 200, 30);
-        b_back.addActionListener(this);
+        b_close.setBounds(50, 450, 200, 30);
+        b_close.addActionListener(this);
 
         this.add(l_applyNow);
         this.add(tf_firstName);
@@ -65,7 +65,7 @@ public class Window_Apply extends JPanel implements ActionListener {
         this.add(pf_password);
         this.add(pf_confirmPassword);
         this.add(b_apply);
-        this.add(b_back);
+        this.add(b_close);
         this.setSize(500, 600);
         this.setLayout(null);
         this.setVisible(true);
@@ -82,17 +82,17 @@ public class Window_Apply extends JPanel implements ActionListener {
             confirmPassword = pf_confirmPassword.getText();
             if (password.equals(confirmPassword)) { // Matches
                 if (sql.customerExists(username)) { // Username already exists
-                    JOptionPane.showMessageDialog(null, "Username already exists.");
+                    JOptionPane.showMessageDialog(w.getFrame(), "Username already exists.");
                     return;
                 }
                 sql.insertPending(sql.getNextID("PendingCustomers"), firstName, lastName, email, username, password);
-                JOptionPane.showMessageDialog(null, "Application created successfully! Check back soon");
+                JOptionPane.showMessageDialog(w.getFrame(), "Application created successfully! Check back soon");
 //                f.dispose();
                 w.dispose();
 
             }
             else {
-                JOptionPane.showMessageDialog(null, "Passwords do not match.");
+                JOptionPane.showMessageDialog(w.getFrame(), "Passwords do not match.");
             }
         }
         else if (e.getActionCommand().equals("Close")) {
