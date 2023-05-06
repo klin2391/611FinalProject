@@ -332,23 +332,20 @@ public class SQL {
      */
 
     // Inserts a manager into the database
-    public void insertManager(int id, String firstName, String lastName, String username, String password, String email, int minToBeSuper) {
-        String sql = "INSERT INTO Managers(id, email, lastName, username, password, email, minToBeSuper) VALUES(?,?,?,?,?,?,?)";
+    public void insertManager(int id, String email, String last, String username, String password, double minToBeSuper){
+        String sql = "INSERT INTO Managers(id, email, lastName, username, password, minToBeSuper) VALUES(?,?,?,?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.setString(2, firstName);
-            pstmt.setString(3, lastName);
+            pstmt.setString(2, email);
+            pstmt.setString(3, last);
             pstmt.setString(4, username);
             pstmt.setString(5, password);
-            pstmt.setString(6, email);
-            pstmt.setInt(7, minToBeSuper);
+            pstmt.setDouble(6, minToBeSuper);
             pstmt.executeUpdate();
-            System.out.println("Manager Account Created!");
         }
         catch (SQLException | ClassNotFoundException e) {
-            System.out.println("KEV DBG");
             System.out.println(e.getMessage());
         }
     }
