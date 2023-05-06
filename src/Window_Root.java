@@ -78,8 +78,10 @@ public class Window_Root extends JFrame implements ActionListener  {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         SQL sql = new SQL();
-//        m = sql.getManager("admin");
-
+        if (sql.getManager("admin") == null){   // Check if manager exists
+            System.out.println("Manager does not exist");
+            sql.insertManager(1, "admin", "admin", "admin", "Password", 10.0);
+        }
     }
 
     public void actionPerformed(ActionEvent e){
