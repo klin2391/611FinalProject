@@ -160,29 +160,53 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
 
         JComboBox cb = (JComboBox)e.getSource();                                // If dropdown is changed
         String symbol = (String)cb.getSelectedItem();
-        if (symbol.equals("Select a Stock to View"))                            // Do nothing
+        if (symbol == null)                             // Do nothing
+            return;
+        if (symbol.equals(""))                            // Do nothing
             return;
         Window_Stock ws = new Window_Stock(user.getStock(symbol),true);
     }
 
     // Update values on frame based on new user
     public void update(User u){
+        System.out.println("DBG1");
         user = u;
         l_nameFirst.setText("First Name: " + u.getFirstName());
         l_nameLast.setText("Last Name: " + u.getLastName());
         l_cashBuyPower.setText("Cash Buying Power: " + u.getBalance());
         l_accountValue.setText("Account Value: " + u.getTotalValue());
         l_profit.setText("Profit: " + u.getProfit());
+        System.out.println("DBG2");
+        if (cb_stocksOwned.getItemCount() == 0){
+            System.out.println("Portfolio is null");
+            return;
+        }
+        System.out.println("DBG3");
+        if (u.getPortfolio().size() == cb_stocksOwned.getItemCount()-1){
+            System.out.println("SAME");
+            return;
+        }
         if (u.getPortfolio().size() > cb_stocksOwned.getItemCount() - 1){       // If new stock is added
+            ArrayList <String> cbItems = new ArrayList<>();
+            for (int i = 0; i < cb_stocksOwned.getItemCount(); i++){
+                cbItems.add(cb_stocksOwned.getItemAt(i));
+            }
+            if (cbItems.contains((String) u.getPortfolio().keySet().toArray()[0])){
+                return;
+            }
             cb_stocksOwned.addItem((String) u.getPortfolio().keySet().toArray()[0]);
         }
         if (u.getPortfolio().size() < cb_stocksOwned.getItemCount() - 1){       // If stock is removed
             if (u.getPortfolio().size() == 0) {
-                for (int i = 0; i < cb_stocksOwned.getItemCount() ; i++){
-                    if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
-                        cb_stocksOwned.removeItemAt(i);
-                    }
-                }
+//                for (int i = 0; i < cb_stocksOwned.getItemCount() ; i++){
+//                    System.out.println("TESTING");
+//                    System.out.println(cb_stocksOwned.getItemAt(i));
+//                    if (cb_stocksOwned.getItemAt(i) != "Select a Stock to View") {
+//                        cb_stocksOwned.removeItemAt(i);
+//                    }
+//                }
+                cb_stocksOwned.removeAllItems();
+
             }
             else {
                 for (int i = 0; i < cb_stocksOwned.getItemCount(); i++){
@@ -194,6 +218,7 @@ public class Window_User extends JPanel implements ActionListener, Observer_User
                 }
             }
         }
+
     }
     public void register(User u){
         u.addWindow(this);

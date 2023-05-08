@@ -526,9 +526,12 @@ public class SQL {
     }
 
     // Inserts a stock into db
-    public void insertStock(int id, String Name, double Price, String Symbol) {
+    public int insertStock(int id, String Name, double Price, String Symbol) {
         String sql = "INSERT INTO Stocks(id, Name, symbol, priceCurrent) VALUES(?,?,?,?)";
-
+        if (stockExists(Symbol)){
+            System.out.println("Stock already exists!");
+            return -1;
+        }
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -536,10 +539,32 @@ public class SQL {
             pstmt.setString(3, Symbol);
             pstmt.setDouble(4, Price);
             pstmt.executeUpdate();
+            return 1;
+        }
+        catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+    }
+
+    public boolean stockExists(String symbol) {
+        String sql = "SELECT * FROM Stocks WHERE symbol = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+            pstmt.setString(1,symbol);
+            ResultSet rs  = pstmt.executeQuery();
+            if (rs.next()) {
+                System.out.println("Stock Exists!");
+                return true;
+            }
         }
         catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
+
+        System.out.println("Stock Does Not Exist!");
+        return false;
     }
 
     // Gets current price of a stock
