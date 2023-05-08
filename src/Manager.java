@@ -142,9 +142,10 @@ public class Manager extends Person implements Observer_User{
         updateObs();
     }
 
-    public void addStock(String stockName, double price, String symbol){
-        sql.insertStock(sql.getNextID("Stocks"), stockName, price, symbol);
+    public int addStock(String stockName, double price, String symbol){
+        int res = sql.insertStock(sql.getNextID("Stocks"), stockName, price, symbol);
         updateObs();
+        return res;
     }
 
     public void removeStock(String stockName){

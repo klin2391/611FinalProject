@@ -75,7 +75,10 @@ public class Window_ManagerAddStock extends JPanel implements ActionListener {
                 return;
             }
             stockSymbol = tf_stockSymbol.getText();
-            manager.addStock(stockName, stockPrice, stockSymbol);
+            if (manager.addStock(stockName, stockPrice, stockSymbol) < 0){
+                JOptionPane.showMessageDialog(w.getFrame(), "Stock Exists.");
+                return;
+            }
             JOptionPane.showMessageDialog(w.getFrame(), "Added the stock successfully!");
             w.update(new Window_Manager(Manager.getInstance(), w));
             w.setTitle("Manager");
